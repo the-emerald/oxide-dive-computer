@@ -3,7 +3,7 @@
 #include <SPI.h>
 #include <Wire.h>
 
-U8G2_SH1107_SEEED_128X128_1_SW_I2C u8g2(U8G2_R0, /* clock=*/ SCL, /* data=*/ SDA, /* reset=*/ U8X8_PIN_NONE);
+U8G2_SH1107_SEEED_128X128_2_HW_I2C u8g2(U8G2_R0, /* clock=*/ SCL, /* data=*/ SDA, /* reset=*/ U8X8_PIN_NONE);
 
 const int BUTTON_PIN = 21;
 const int LED_PIN = 13;
@@ -27,6 +27,15 @@ void drawMainScreen() {
 
     u8g2.setFont(u8g2_font_inb21_mn);
     u8g2.drawStr(0, 95, "99");
+  }
+
+  // Next stop depth
+  {
+    u8g2.setFont(u8g2_font_9x15B_mr);
+    u8g2.drawStr(70, 70, "Stop");
+
+    u8g2.setFont(u8g2_font_inb21_mn);
+    u8g2.drawStr(70, 95, "99");
   }
 
 
