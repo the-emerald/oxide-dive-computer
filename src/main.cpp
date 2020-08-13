@@ -3,7 +3,7 @@
 #include <SPI.h>
 #include <Wire.h>
 
-U8G2_SH1107_SEEED_128X128_2_HW_I2C u8g2(U8G2_R0, /* clock=*/ SCL, /* data=*/ SDA, /* reset=*/ U8X8_PIN_NONE);
+U8G2_SH1107_SEEED_128X128_F_HW_I2C u8g2(U8G2_R0, /* clock=*/ SCL, /* data=*/ SDA, /* reset=*/ U8X8_PIN_NONE);
 
 const int BUTTON_PIN = 21;
 const int LED_PIN = 13;
@@ -39,6 +39,8 @@ void drawMainScreen() {
   }
 
 
+  u8g2.sendBuffer();
+
 }
 
 void setup() {
@@ -49,22 +51,22 @@ void setup() {
 }
 
 void loop() {
-  u8g2.firstPage();
-  do {
+  int button = digitalRead(BUTTON_PIN);
+
+  if (button == LOW) {
+    // For now, just say button pressed
+    u8g2.clearBuffer();
     u8g2.setFont(u8g2_font_t0_15b_mr);
+    u8g2.drawStr(0, 24, "Button pressed");
+    u8g2.sendBuffer();
 
-    int button = digitalRead(BUTTON_PIN);
+    digitalWrite(LED_PIN, HIGH);
+  }
+  else {
+    // Draw a demo screen
+    u8g2.clearBuffer();
+    drawMainScreen();
 
-    if (button == LOW) {
-      // For now, just say button pressed
-      u8g2.drawStr(0, 24, "Button pressed");
-      digitalWrite(LED_PIN, HIGH);
-    }
-    else {
-      // Draw a demo screen
-      drawMainScreen();
-      digitalWrite(LED_PIN, LOW);
-    }
-
-  } while ( u8g2.nextPage() );
+    digitalWrite(LED_PIN, LOW);
+  }
 }
