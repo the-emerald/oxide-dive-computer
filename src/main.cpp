@@ -22,12 +22,13 @@ void loop() {
 
     int button = digitalRead(BUTTON_PIN);
 
-    if (button == LOW) { // Not sure why this is LOW
+    if (button == LOW) {
       u8g2.drawStr(0,24,"Button pressed");
       digitalWrite(LED_PIN, HIGH);
     }
     else {
       u8g2.drawStr(0,24,"Hello, world!");
+      digitalWrite(LED_PIN, LOW);
     }
 
   } while ( u8g2.nextPage() );
