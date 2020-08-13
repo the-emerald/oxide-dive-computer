@@ -8,6 +8,30 @@ U8G2_SH1107_SEEED_128X128_1_SW_I2C u8g2(U8G2_R0, /* clock=*/ SCL, /* data=*/ SDA
 const int BUTTON_PIN = 21;
 const int LED_PIN = 13;
 
+// Draw a demo screen (that has no moving parts)
+void drawMainScreen() {
+  // NDL
+  {
+    u8g2.setFont(u8g2_font_9x15B_mr);
+    u8g2.drawStr(0, 12, "NDL");
+
+    u8g2.setFont(u8g2_font_inr38_mn);
+    u8g2.drawStr(0, 53, "999");
+
+  }
+
+  // Depth
+  {
+    u8g2.setFont(u8g2_font_9x15B_mr);
+    u8g2.drawStr(0, 70, "Depth");
+
+    u8g2.setFont(u8g2_font_inb21_mn);
+    u8g2.drawStr(0, 95, "99");
+  }
+
+
+}
+
 void setup() {
   pinMode(BUTTON_PIN, INPUT_PULLUP);
   pinMode(LED_PIN, OUTPUT);
@@ -18,16 +42,18 @@ void setup() {
 void loop() {
   u8g2.firstPage();
   do {
-    u8g2.setFont(u8g2_font_ncenB10_tr);
+    u8g2.setFont(u8g2_font_t0_15b_mr);
 
     int button = digitalRead(BUTTON_PIN);
 
     if (button == LOW) {
-      u8g2.drawStr(0,24,"Button pressed");
+      // For now, just say button pressed
+      u8g2.drawStr(0, 24, "Button pressed");
       digitalWrite(LED_PIN, HIGH);
     }
     else {
-      u8g2.drawStr(0,24,"Hello, world!");
+      // Draw a demo screen
+      drawMainScreen();
       digitalWrite(LED_PIN, LOW);
     }
 
