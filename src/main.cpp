@@ -15,29 +15,56 @@ void drawMainScreen() {
     u8g2.setFont(u8g2_font_9x15B_mr);
     u8g2.drawStr(0, 12, "NDL");
 
-    u8g2.setFont(u8g2_font_inr38_mn);
-    u8g2.drawStr(0, 53, "999");
+    u8g2.setFont(u8g2_font_inb21_mn);
+    u8g2.drawStr(0, 36, "999");
 
+  }
+
+    // Next stop depth
+  {
+    u8g2.setFont(u8g2_font_9x15B_mr);
+    u8g2.drawStr(75, 12, "Stop");
+
+    u8g2.setFont(u8g2_font_inb21_mn);
+    u8g2.drawStr(75, 36, "99");
   }
 
   // Depth
   {
     u8g2.setFont(u8g2_font_9x15B_mr);
-    u8g2.drawStr(0, 70, "Depth");
+    u8g2.drawStr(0, 58, "Depth");
 
     u8g2.setFont(u8g2_font_inb21_mn);
-    u8g2.drawStr(0, 95, "99");
+    u8g2.drawStr(0, 82, "99");
   }
 
-  // Next stop depth
+  // Runtime
   {
     u8g2.setFont(u8g2_font_9x15B_mr);
-    u8g2.drawStr(70, 70, "Stop");
+    u8g2.drawStr(65, 58, "Run");
 
     u8g2.setFont(u8g2_font_inb21_mn);
-    u8g2.drawStr(70, 95, "99");
+    u8g2.drawStr(65, 82, "999");
   }
 
+
+  // Gas
+  {
+    u8g2.setFont(u8g2_font_9x15B_mr);
+    u8g2.drawStr(0, 104, "Gas");
+
+    u8g2.setFont(u8g2_font_10x20_mn);
+    u8g2.drawStr(0, 128, "99/99");
+  }
+
+  // Time to surface
+  {
+    u8g2.setFont(u8g2_font_9x15B_mr);
+    u8g2.drawStr(65, 104, "TTS");
+
+    u8g2.setFont(u8g2_font_inb21_mn);
+    u8g2.drawStr(65, 128, "999");
+  }
 
   u8g2.sendBuffer();
 
