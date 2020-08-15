@@ -2,20 +2,21 @@
 #include <U8g2lib.h>
 #include <SPI.h>
 #include <Wire.h>
-#include "display.hpp"
 
-const int BUTTON_PIN = 21;
+#include "display.hpp"
+#include "buttonCycle.hpp"
+
 const int LED_PIN = 13;
 
 void setup() {
-  pinMode(BUTTON_PIN, INPUT_PULLUP);
+  pinMode(BUTTON_CYCLE_PIN, INPUT_PULLUP);
   pinMode(LED_PIN, OUTPUT);
   
   u8g2.begin();
 }
 
 void loop() {
-  int button = digitalRead(BUTTON_PIN);
+  int button = digitalRead(BUTTON_CYCLE_PIN);
 
   if (button == LOW) {
     // For now, just say button pressed

@@ -1,9 +1,6 @@
 #pragma once
 
-#include <Arduino.h>
 #include <U8g2lib.h>
-#include <SPI.h>
-#include <Wire.h>
 
 extern U8G2_SH1107_SEEED_128X128_F_HW_I2C u8g2;
 
