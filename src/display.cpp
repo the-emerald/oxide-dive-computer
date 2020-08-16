@@ -6,6 +6,21 @@
 
 U8G2_SH1107_SEEED_128X128_F_HW_I2C u8g2(U8G2_R0, /* clock=*/ SCL, /* data=*/ SDA, /* reset=*/ U8X8_PIN_NONE);
 
+
+void drawScreen(DisplayState state) {
+    switch (state) {
+        case DiveScreen1:
+            drawMainScreen();
+            break;
+        case DiveScreen2:
+            // TODO
+            break;
+        // TODO: Fill in rest of cases
+        default:
+            break;
+    }
+}
+
 void drawMainScreen() {
     u8g2.drawVLine(62, 0, 128);
     drawNDL();

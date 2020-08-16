@@ -4,7 +4,8 @@
 #include <Wire.h>
 
 #include "display.hpp"
-#include "buttonCycle.hpp"
+#include "button.hpp"
+#include "menu.hpp"
 
 const int LED_PIN = 13;
 
@@ -30,7 +31,7 @@ void loop() {
   else {
     // Draw a demo screen
     u8g2.clearBuffer();
-    drawMainScreen();
+    drawScreen(current_state);
 
     digitalWrite(LED_PIN, LOW);
   }

@@ -1,8 +1,11 @@
 #pragma once
 
 #include <U8g2lib.h>
+#include "menu.hpp"
 
 extern U8G2_SH1107_SEEED_128X128_F_HW_I2C u8g2;
+
+extern void drawScreen(DisplayState state);
 
 extern void drawMainScreen();
 
