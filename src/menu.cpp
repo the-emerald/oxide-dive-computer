@@ -18,6 +18,11 @@ DisplayState fromMenu(uint8_t selection) {
     }
 }
 
+DisplayState fromSettingsMenu(uint8_t selection) {
+    // TODO: Replace this
+    return Menu;
+}
+
 DisplayState nextDisplayState(DisplayState current_state, Button input) {
     switch (current_state) {
         case DiveScreen1:
