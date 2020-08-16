@@ -11,37 +11,25 @@ const int LED_PIN = 13;
 
 void setup() {
   pinMode(BUTTON_CYCLE_PIN, INPUT_PULLUP);
+  pinMode(BUTTON_SELECT_PIN, INPUT_PULLUP);
+
   pinMode(LED_PIN, OUTPUT);
   
   u8g2.begin();
 }
 
 void loop() {
-  // int button = digitalRead(BUTTON_CYCLE_PIN);
 
   if (cycleButtonPressed()) {
     current_state = nextDisplayState(current_state, Cycle);
-    digitalWrite(LED_PIN, HIGH);
+  }
+  if (selectButtonPressed()) {
+    current_state = nextDisplayState(current_state, Select);
   }
 
   u8g2.clearBuffer();
   drawScreen(current_state);
 
   updateCycleButtonState();
-
-
-  // if (button == LOW) {
-  //   // For now, just say button pressed
-  //   u8g2.clearBuffer();
-  //   drawDiveScreen2();
-
-  //   digitalWrite(LED_PIN, HIGH);
-  // }
-  // else {
-  //   // Draw a demo screen
-  //   u8g2.clearBuffer();
-  //   drawScreen(current_state);
-
-  //   digitalWrite(LED_PIN, LOW);
-  // }
+  updateSelectButtonState();
 }

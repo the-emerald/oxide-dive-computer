@@ -9,6 +9,7 @@ extern void drawScreen(DisplayState state);
 
 extern void drawDiveScreen1();
 extern void drawDiveScreen2();
+extern void drawMenu();
 
 void drawTemperature();
 void drawBatteryVoltage();

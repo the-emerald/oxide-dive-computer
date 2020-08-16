@@ -15,10 +15,20 @@ void drawScreen(DisplayState state) {
         case DiveScreen2:
             drawDiveScreen2();
             break;
+        case Menu:
+            drawMenu();
+            break;
         // TODO: Fill in rest of cases
         default:
             break;
     }
+}
+
+void drawMenu() {
+    u8g2.setFont(u8g2_font_9x15B_mr);
+    u8g2.drawStr(0, 12, "Menu...!");
+
+    u8g2.sendBuffer();
 }
 
 void drawDiveScreen2() {
