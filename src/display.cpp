@@ -22,25 +22,55 @@ void drawScreen(DisplayState state) {
 }
 
 void drawDiveScreen2() {
-    u8g2.setFont(u8g2_font_t0_15b_mr);
-    u8g2.drawStr(0, 24, "Button pressed");
+    u8g2.drawVLine(62, 0, 87);
+
+    drawTemperature();
+    drawppO2();
+    u8g2.drawHLine(0, 41, 128);
+
+    drawGF();
+    drawBatteryVoltage();
+    u8g2.drawHLine(0, 87, 128);
+
+    drawTissuePressure();
+
     u8g2.sendBuffer();
 }
 
 void drawTemperature() {
+    u8g2.setFont(u8g2_font_9x15B_mr);
+    u8g2.drawStr(0, 12, "Temp");
 
+    u8g2.setFont(u8g2_font_inb21_mn);
+    u8g2.drawStr(0, 36, "18");
+}
+
+void drawppO2() {
+    u8g2.setFont(u8g2_font_9x15B_mr);
+    u8g2.drawStr(70, 12, "ppO2");
+
+    u8g2.setFont(u8g2_font_10x20_mn);
+    u8g2.drawStr(70, 36, "1.42");
+}
+
+void drawGF() {
+    u8g2.setFont(u8g2_font_9x15B_mr);
+    u8g2.drawStr(0, 58, "GF");
+
+    u8g2.setFont(u8g2_font_10x20_mn);
+    u8g2.drawStr(0, 82, "30/70");
 }
 
 void drawBatteryVoltage() {
+    u8g2.setFont(u8g2_font_9x15B_mr);
+    u8g2.drawStr(70, 58, "Batt");
 
-}
-
-void drawPressureReadout() {
-
+    u8g2.setFont(u8g2_font_10x20_mn);
+    u8g2.drawStr(70, 82, "3.7");
 }
 
 void drawTissuePressure() {
-
+    // TODO: Draw tissue pressures
 }
 
 void drawDiveScreen1() {

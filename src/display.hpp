@@ -10,6 +10,12 @@ extern void drawScreen(DisplayState state);
 extern void drawDiveScreen1();
 extern void drawDiveScreen2();
 
+void drawTemperature();
+void drawBatteryVoltage();
+void drawppO2();
+void drawGF();
+void drawTissuePressure();
+
 void drawNDL();
 void drawNextStopDepth();
 void drawDepth();

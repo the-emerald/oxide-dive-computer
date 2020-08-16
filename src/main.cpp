@@ -23,9 +23,6 @@ void loop() {
     current_state = nextDisplayState(current_state, Cycle);
     digitalWrite(LED_PIN, HIGH);
   }
-  else {
-    digitalWrite(LED_PIN, LOW);
-  }
 
   u8g2.clearBuffer();
   drawScreen(current_state);
