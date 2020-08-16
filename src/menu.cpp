@@ -42,6 +42,8 @@ DisplayState nextDisplayState(DisplayState current_state, Button input) {
         // TODO: Remove this when Menu selection functionality is implemented
         case Menu:
             return DiveScreen1;
+        case About:
+            return Menu;
         default:
             return current_state;
     }

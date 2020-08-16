@@ -3,6 +3,7 @@
 #include <SPI.h>
 #include <Wire.h>
 #include "display.hpp"
+#include "logo.hpp"
 
 U8G2_SH1107_SEEED_128X128_F_HW_I2C u8g2(U8G2_R0, /* clock=*/ SCL, /* data=*/ SDA, /* reset=*/ U8X8_PIN_NONE);
 
@@ -53,7 +54,14 @@ void drawGasMenu() {
 }
 
 void drawAbout() {
-    
+    u8g2.drawXBMP(32, 5, LOGO_WIDTH, LOGO_HEIGHT, logo_bits);
+
+    u8g2.setFont(u8g2_font_profont12_mr);
+    u8g2.drawStr(10, 80, "Oxide Dive Computer");
+    u8g2.drawStr(30, 95, "[Prototype]");
+    u8g2.drawStr(20, 110, "Powered by Capra");
+
+    u8g2.sendBuffer();
 }
 
 void drawMenu() {
