@@ -10,7 +10,7 @@ U8G2_SH1107_SEEED_128X128_F_HW_I2C u8g2(U8G2_R0, /* clock=*/ SCL, /* data=*/ SDA
 void drawScreen(DisplayState state) {
     switch (state) {
         case DiveScreen1:
-            drawMainScreen();
+            drawDiveScreen1();
             break;
         case DiveScreen2:
             // TODO
@@ -21,7 +21,7 @@ void drawScreen(DisplayState state) {
     }
 }
 
-void drawMainScreen() {
+void drawDiveScreen1() {
     u8g2.drawVLine(62, 0, 128);
     drawNDL();
     drawNextStopDepth();
