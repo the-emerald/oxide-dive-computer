@@ -6,3 +6,6 @@ enum Button {
     Cycle,
     Select
 };
+
+extern void updateCycleButtonState();
+extern bool cycleButtonPressed();

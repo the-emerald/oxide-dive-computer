@@ -17,20 +17,34 @@ void setup() {
 }
 
 void loop() {
-  int button = digitalRead(BUTTON_CYCLE_PIN);
+  // int button = digitalRead(BUTTON_CYCLE_PIN);
 
-  if (button == LOW) {
-    // For now, just say button pressed
-    u8g2.clearBuffer();
-    drawDiveScreen2();
-
+  if (cycleButtonPressed()) {
+    current_state = nextDisplayState(current_state, Cycle);
     digitalWrite(LED_PIN, HIGH);
   }
   else {
-    // Draw a demo screen
-    u8g2.clearBuffer();
-    drawScreen(current_state);
-
     digitalWrite(LED_PIN, LOW);
   }
+
+  u8g2.clearBuffer();
+  drawScreen(current_state);
+
+  updateCycleButtonState();
+
+
+  // if (button == LOW) {
+  //   // For now, just say button pressed
+  //   u8g2.clearBuffer();
+  //   drawDiveScreen2();
+
+  //   digitalWrite(LED_PIN, HIGH);
+  // }
+  // else {
+  //   // Draw a demo screen
+  //   u8g2.clearBuffer();
+  //   drawScreen(current_state);
+
+  //   digitalWrite(LED_PIN, LOW);
+  // }
 }
