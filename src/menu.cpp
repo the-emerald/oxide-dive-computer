@@ -19,8 +19,20 @@ DisplayState fromMenu(uint8_t selection) {
 }
 
 DisplayState fromSettingsMenu(uint8_t selection) {
-    // TODO: Replace this
-    return Menu;
+    switch (selection) {
+        case 1:
+            return GFL1;
+        case 2:
+            return GFL2;
+        case 3:
+            return Backlight;
+        case 4:
+            return Bluetooth;
+        case 5:
+            return Menu;
+        default:
+            return Settings;
+    }
 }
 
 DisplayState nextDisplayState(DisplayState current_state, Button input) {
