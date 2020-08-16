@@ -4,7 +4,18 @@
 DisplayState current_state = DiveScreen1;
 
 DisplayState fromMenu(uint8_t selection) {
-    return DiveScreen1; // TODO: Remove this placeholder
+    switch (selection) {
+        case 1:
+            return Settings;
+        case 2:
+            return Gas;
+        case 3:
+            return About;
+        case 4:
+            return DiveScreen1;
+        default:
+            return Menu;
+    }
 }
 
 DisplayState nextDisplayState(DisplayState current_state, Button input) {

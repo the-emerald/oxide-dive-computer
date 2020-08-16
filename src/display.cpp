@@ -6,6 +6,9 @@
 
 U8G2_SH1107_SEEED_128X128_F_HW_I2C u8g2(U8G2_R0, /* clock=*/ SCL, /* data=*/ SDA, /* reset=*/ U8X8_PIN_NONE);
 
+const char* menuTitle = "Menu";
+const char* menuSl = "Settings\nGases\nAbout\nBack";
+
 
 void drawScreen(DisplayState state) {
     switch (state) {
@@ -18,6 +21,13 @@ void drawScreen(DisplayState state) {
         case Menu:
             drawMenu();
             break;
+        // Sub-menus
+        case Settings:
+            break;
+        case Gas:
+            break;
+        case About:
+            break;
         // TODO: Fill in rest of cases
         default:
             break;
@@ -25,8 +35,10 @@ void drawScreen(DisplayState state) {
 }
 
 void drawMenu() {
-    u8g2.setFont(u8g2_font_9x15B_mr);
-    u8g2.drawStr(0, 12, "Menu...!");
+    u8g2.setFont(u8g2_font_7x13B_mr);
+    uint8_t menuReturn = u8g2.userInterfaceSelectionList(menuTitle, 1, menuSl);
+
+    current_state = fromMenu(menuReturn);
 
     u8g2.sendBuffer();
 }

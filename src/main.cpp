@@ -15,7 +15,7 @@ void setup() {
 
   pinMode(LED_PIN, OUTPUT);
   
-  u8g2.begin();
+  u8g2.begin(BUTTON_SELECT_PIN, BUTTON_CYCLE_PIN, U8X8_PIN_NONE, U8X8_PIN_NONE, U8X8_PIN_NONE, U8X8_PIN_NONE);
 }
 
 void loop() {
