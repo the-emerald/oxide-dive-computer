@@ -13,12 +13,34 @@ void drawScreen(DisplayState state) {
             drawDiveScreen1();
             break;
         case DiveScreen2:
-            // TODO
+            drawDiveScreen2();
             break;
         // TODO: Fill in rest of cases
         default:
             break;
     }
+}
+
+void drawDiveScreen2() {
+    u8g2.setFont(u8g2_font_t0_15b_mr);
+    u8g2.drawStr(0, 24, "Button pressed");
+    u8g2.sendBuffer();
+}
+
+void drawTemperature() {
+
+}
+
+void drawBatteryVoltage() {
+
+}
+
+void drawPressureReadout() {
+
+}
+
+void drawTissuePressure() {
+
 }
 
 void drawDiveScreen1() {

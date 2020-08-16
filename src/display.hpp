@@ -8,10 +8,11 @@ extern U8G2_SH1107_SEEED_128X128_F_HW_I2C u8g2;
 extern void drawScreen(DisplayState state);
 
 extern void drawDiveScreen1();
+extern void drawDiveScreen2();
 
-extern void drawNDL();
-extern void drawNextStopDepth();
-extern void drawDepth();
-extern void drawRuntime();
-extern void drawGas();
-extern void drawTTS();
+void drawNDL();
+void drawNextStopDepth();
+void drawDepth();
+void drawRuntime();
+void drawGas();
+void drawTTS();

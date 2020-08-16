@@ -22,9 +22,7 @@ void loop() {
   if (button == LOW) {
     // For now, just say button pressed
     u8g2.clearBuffer();
-    u8g2.setFont(u8g2_font_t0_15b_mr);
-    u8g2.drawStr(0, 24, "Button pressed");
-    u8g2.sendBuffer();
+    drawDiveScreen2();
 
     digitalWrite(LED_PIN, HIGH);
   }
