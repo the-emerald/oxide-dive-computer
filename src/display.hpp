@@ -15,6 +15,8 @@ extern void drawDiveSettings();
 extern void drawGasMenu();
 extern void drawAbout();
 
+extern void drawGasSelection(uint8_t selection);
+
 void drawTemperature();
 void drawBatteryVoltage();
 void drawppO2();

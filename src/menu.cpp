@@ -1,5 +1,6 @@
 #include "menu.hpp"
 #include <cstdint>
+#include "display.hpp"
 
 DisplayState current_state = DiveScreen1;
 
@@ -52,6 +53,16 @@ DisplayState fromSystemSettingsMenu(uint8_t selection) {
         case 5:
             return Menu;
         default:
+            return Menu;
+    }
+}
+
+DisplayState fromGasMenu(uint8_t selection) {
+    switch (selection) {
+        case 11:
+            return Menu;
+        default:
+            drawGasSelection(selection);
             return Menu;
     }
 }

@@ -16,8 +16,12 @@ const char* diveSettingsMenuSl = "GF 1\nGF 2\nWater type\nppO2 Alarm\nNDL Alarm\
 const char* systemSettingsMenuTitle = "System Settings";
 const char* systemSettingsMenuSl = "Display\nBluetooth\nReset Tissues\nReset Settings\nBack";
 
+const char* gasMenuTitle = "Gas";
+const char* gasMenuSl = "Gas 1\nGas 2\nGas 3\nGas 4\nGas 5\nGas 6\nGas 7\nGas 8\nGas 9\nGas 10\nBack";    // 1..=10 is for gases
+
 
 void drawScreen(DisplayState state) {
+    u8g2.setFontRefHeightAll();
     switch (state) {
         case DiveScreen1:
             drawDiveScreen1();
@@ -45,6 +49,7 @@ void drawScreen(DisplayState state) {
         default:
             break;
     }
+    u8g2.sendBuffer();
 }
 
 void drawDiveSettings() {
@@ -52,7 +57,6 @@ void drawDiveSettings() {
     uint8_t menuReturn = u8g2.userInterfaceSelectionList(systemSettingsMenuTitle, 1, systemSettingsMenuSl);
 
     current_state = fromSystemSettingsMenu(menuReturn);
-    u8g2.sendBuffer();
 }
 
 void drawSystemSettings() {
@@ -60,11 +64,32 @@ void drawSystemSettings() {
     uint8_t menuReturn = u8g2.userInterfaceSelectionList(diveSettingsMenuTitle, 1, diveSettingsMenuSl);
 
     current_state = fromDiveSettingsMenu(menuReturn);
-    u8g2.sendBuffer();
 }
 
 void drawGasMenu() {
-    // TODO: Make gas menu
+    u8g2.setFont(u8g2_font_7x13B_mr);
+    uint8_t menuReturn = u8g2.userInterfaceSelectionList(gasMenuTitle, 1, gasMenuSl);
+
+    current_state = fromGasMenu(menuReturn);
+}
+
+extern void drawGasSelection(uint8_t selection) {
+    // TODO: Actually store the gas
+    u8g2.setFont(u8g2_font_profont22_mr);
+
+    char id[5];
+    sprintf(id, "%d", selection);
+
+    char title[16] = "Set gas ";
+    strcat(title, id);
+    strcat(title, "\n");
+
+    uint8_t dummy_value = 0;
+
+    u8g2.userInterfaceInputValue(title, "O2: ", &dummy_value, 0, 100, 3, "");
+
+    u8g2.userInterfaceInputValue(title, "He: ", &dummy_value, 0, 100-dummy_value, 3, "");
+
 }
 
 void drawAbout() {
@@ -74,8 +99,6 @@ void drawAbout() {
     u8g2.drawStr(10, 80, "Oxide Dive Computer");
     u8g2.drawStr(30, 95, "[Prototype]");
     u8g2.drawStr(20, 110, "Powered by Capra");
-
-    u8g2.sendBuffer();
 }
 
 void drawMenu() {
@@ -83,7 +106,6 @@ void drawMenu() {
     uint8_t menuReturn = u8g2.userInterfaceSelectionList(menuTitle, 1, menuSl);
 
     current_state = fromMenu(menuReturn);
-    u8g2.sendBuffer();
 }
 
 void drawDiveScreen2() {
@@ -98,8 +120,6 @@ void drawDiveScreen2() {
     u8g2.drawHLine(0, 87, 128);
 
     drawTissuePressure();
-
-    u8g2.sendBuffer();
 }
 
 void drawTemperature() {
@@ -148,7 +168,6 @@ void drawDiveScreen1() {
     u8g2.drawHLine(0, 87, 128);
     drawGas();
     drawTTS();
-    u8g2.sendBuffer();
 }
 
 void drawNDL() {
