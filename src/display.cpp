@@ -84,12 +84,33 @@ extern void drawGasSelection(uint8_t selection) {
     strcat(title, id);
     strcat(title, "\n");
 
-    uint8_t dummy_value = 0;
+    uint8_t dummy_o2_value = 0;
+    uint8_t dummy_he_value = 0;
 
-    u8g2.userInterfaceInputValue(title, "O2: ", &dummy_value, 0, 100, 3, "");
+    u8g2.userInterfaceInputValue(title, "O2: ", &dummy_o2_value, 0, 100, 3, "");
 
-    u8g2.userInterfaceInputValue(title, "He: ", &dummy_value, 0, 100-dummy_value, 3, "");
+    u8g2.userInterfaceInputValue(title, "He: ", &dummy_he_value, 0, 100-dummy_o2_value, 3, "");
 
+    char confirmTitle[16] = "Confirm ";
+    strcat(confirmTitle, id);
+    strcat(confirmTitle, "?\n");
+
+    // TODO: Refactor this out
+
+    char o2[4];
+    sprintf(o2, "%d", dummy_o2_value);
+
+    char he[4];
+    sprintf(he, "%d", dummy_he_value);
+
+    char prettyGas[6] = "";
+    strcat(prettyGas, o2);
+    strcat(prettyGas, "/");
+    strcat(prettyGas, he);
+
+    u8g2.userInterfaceMessage(confirmTitle, prettyGas, "", "Ok\nCancel");
+
+    current_state = Gas;
 }
 
 void drawAbout() {
