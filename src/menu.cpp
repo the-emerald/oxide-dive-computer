@@ -78,8 +78,18 @@ DisplayState fromWaterSalinityMenu(uint8_t selection) {
 
 DisplayState fromPPO2AlarmMenu(uint8_t selection) {
     switch (selection) {
+        case 8: case 9:
+            return DiveSettings;
+        default:
+            // TODO: Add function for selecting ppO2
+            return DiveSettings;
+    }
+}
+
+DisplayState fromNDLAlarmMenu(uint8_t selection) {
+    switch (selection) {
         case 1:
-            drawPPO2Selection();
+            drawNDLAlarmSelection();
             return DiveSettings;
         default:
             return DiveSettings;

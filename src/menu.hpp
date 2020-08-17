@@ -37,4 +37,6 @@ DisplayState fromWaterSalinityMenu(uint8_t selection);
 
 DisplayState fromPPO2AlarmMenu(uint8_t selection);
 
+DisplayState fromNDLAlarmMenu(uint8_t selection);
+
 DisplayState nextDisplayState(DisplayState current_state, Button input);

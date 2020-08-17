@@ -23,7 +23,10 @@ const char* waterSalinityMenuTitle = "Water Salinity";
 const char* waterSalinityMenuSl = "Fresh\nEN13319\nSalt\nBack";
 
 const char* ppO2AlarmMenuTitle = "ppO2 Alarm";
-const char* ppO2AlarmMenuSl = "On\nOff\nBack";
+const char* ppO2AlarmMenuSl = "1.0\n1.1\n1.2\n1.3\n1.4\n1.5\n1.6\nOff\nBack";
+
+const char* ndlAlarmMenuTitle = "NDL Alarm";
+const char* ndlAlarmMenuSl = "On\nOff\nBack";
 
 void drawScreen(DisplayState state) {
     u8g2.setFontRefHeightAll();
@@ -50,6 +53,9 @@ void drawScreen(DisplayState state) {
         case PPO2Alarm:
             drawPPO2Alarm();
             break;
+        case NDLAlarm:
+            drawNDLAlarm();
+            break;
         case Gas:
             drawGasMenu();
             break;
@@ -61,6 +67,27 @@ void drawScreen(DisplayState state) {
             break;
     }
     u8g2.sendBuffer();
+}
+
+void drawNDLAlarm() {
+    u8g2.setFont(u8g2_font_7x13B_mr);
+    uint8_t menuReturn = u8g2.userInterfaceSelectionList(ndlAlarmMenuTitle, 1, ndlAlarmMenuSl);
+    current_state = fromNDLAlarmMenu(menuReturn);
+}
+
+void drawNDLAlarmSelection() {
+    u8g2.setFont(u8g2_font_profont22_mr);
+
+    // TODO: Fix dummy NDL alarm values
+    uint8_t dummy_alarm = 0;
+
+    u8g2.userInterfaceInputValue("Set NDL\nalarm:\n", "", &dummy_alarm, 1, 10, 2, " min");
+
+    char alarm[16];
+    sprintf(alarm, "%d", dummy_alarm);
+    strcat(alarm, " min");
+    
+    u8g2.userInterfaceMessage("Confirm?", alarm, "", "Ok\nCancel");
 }
 
 void drawWaterSalinity() {
@@ -96,20 +123,6 @@ void drawPPO2Alarm() {
     uint8_t menuReturn = u8g2.userInterfaceSelectionList(ppO2AlarmMenuTitle, 1, ppO2AlarmMenuSl);
 
     current_state = fromPPO2AlarmMenu(menuReturn);
-}
-
-void drawPPO2Selection() {
-    u8g2.setFont(u8g2_font_profont22_mr);
-
-    // TODO: Fix dummy ppO2 alarm values
-    uint8_t dummy_threshold = 0;
-
-    u8g2.userInterfaceInputValue("Set ppO2\nalarm\n(x10):", "", &dummy_threshold, 10, 20, 2, "");
-
-    char ppO2Actual[16];
-    sprintf(ppO2Actual, "%.2f", ((double) dummy_threshold)/(double) 10);
-    
-    u8g2.userInterfaceMessage("Confirm?", ppO2Actual, "", "Ok\nCancel");
 }
 
 extern void drawGFLSelection(uint8_t selection) {
