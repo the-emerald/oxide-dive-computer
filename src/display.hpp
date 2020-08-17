@@ -11,6 +11,7 @@ extern void drawDiveScreen1();
 extern void drawDiveScreen2();
 extern void drawMenu();
 extern void drawSystemSettings();
+extern void drawDiveSettings();
 extern void drawGasMenu();
 extern void drawAbout();
 

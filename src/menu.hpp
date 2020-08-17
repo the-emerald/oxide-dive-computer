@@ -29,4 +29,6 @@ DisplayState fromMenu(uint8_t selection);
 
 DisplayState fromDiveSettingsMenu(uint8_t selection);
 
+DisplayState fromSystemSettingsMenu(uint8_t selection);
+
 DisplayState nextDisplayState(DisplayState current_state, Button input);

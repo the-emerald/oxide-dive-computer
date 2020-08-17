@@ -39,6 +39,23 @@ DisplayState fromDiveSettingsMenu(uint8_t selection) {
     }
 }
 
+DisplayState fromSystemSettingsMenu(uint8_t selection) {
+    switch (selection) {
+        case 1:
+            return Display;
+        case 2:
+            return Bluetooth;
+        case 3:
+            return ResetTissues;
+        case 4:
+            return ResetSettings;
+        case 5:
+            return Menu;
+        default:
+            return Menu;
+    }
+}
+
 DisplayState nextDisplayState(DisplayState current_state, Button input) {
     switch (current_state) {
         case DiveScreen1:
@@ -55,9 +72,6 @@ DisplayState nextDisplayState(DisplayState current_state, Button input) {
                 case Select:
                     return Menu;
             }
-        // TODO: Remove this when Menu selection functionality is implemented
-        case Menu:
-            return DiveScreen1;
         case About:
             return Menu;
         // Default: do not change any state
