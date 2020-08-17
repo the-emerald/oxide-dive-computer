@@ -10,7 +10,7 @@ extern void drawScreen(DisplayState state);
 extern void drawDiveScreen1();
 extern void drawDiveScreen2();
 extern void drawMenu();
-extern void drawSettings();
+extern void drawSystemSettings();
 extern void drawGasMenu();
 extern void drawAbout();
 

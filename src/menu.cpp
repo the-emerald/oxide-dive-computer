@@ -6,32 +6,36 @@ DisplayState current_state = DiveScreen1;
 DisplayState fromMenu(uint8_t selection) {
     switch (selection) {
         case 1:
-            return Settings;
+            return DiveSettings;
         case 2:
-            return Gas;
+            return SystemSettings;
         case 3:
-            return About;
+            return Gas;
         case 4:
+            return About;
+        case 5:
             return DiveScreen1;
         default:
             return Menu;
     }
 }
 
-DisplayState fromSettingsMenu(uint8_t selection) {
+DisplayState fromDiveSettingsMenu(uint8_t selection) {
     switch (selection) {
         case 1:
             return GFL1;
         case 2:
             return GFL2;
         case 3:
-            return Backlight;
+            return WaterType;
         case 4:
-            return Bluetooth;
+            return PPO2Alarm;
         case 5:
+            return NDLAlarm;
+        case 6:
             return Menu;
         default:
-            return Settings;
+            return DiveSettings;
     }
 }
 
@@ -56,6 +60,7 @@ DisplayState nextDisplayState(DisplayState current_state, Button input) {
             return DiveScreen1;
         case About:
             return Menu;
+        // Default: do not change any state
         default:
             return current_state;
     }

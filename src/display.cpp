@@ -8,10 +8,10 @@
 U8G2_SH1107_SEEED_128X128_F_HW_I2C u8g2(U8G2_R0, /* clock=*/ SCL, /* data=*/ SDA, /* reset=*/ U8X8_PIN_NONE);
 
 const char* menuTitle = "Menu";
-const char* menuSl = "Settings\nGases\nAbout\nBack";
+const char* menuSl = "Dive Settings\nSystem Settings\nGas\nAbout\nBack";
 
 const char* settingsMenuTitle = "Settings";
-const char* settingsMenuSl = "GF 1\nGF 2\nBacklight\nBluetooth\nBack";
+const char* settingsMenuSl = "GF 1\nGF 2\nWater type\nppO2 Alarm\nNDL Alarm\nBack";
 
 
 void drawScreen(DisplayState state) {
@@ -26,8 +26,11 @@ void drawScreen(DisplayState state) {
             drawMenu();
             break;
         // Sub-menus
-        case Settings:
-            drawSettings();
+        case DiveSettings:
+            drawSystemSettings();
+            break;
+        case SystemSettings:
+            drawDiveSettings();
             break;
         case Gas:
             drawGasMenu();
@@ -41,11 +44,15 @@ void drawScreen(DisplayState state) {
     }
 }
 
-void drawSettings() {
+void drawDiveSettings() {
+    
+}
+
+void drawSystemSettings() {
     u8g2.setFont(u8g2_font_7x13B_mr);
     uint8_t menuReturn = u8g2.userInterfaceSelectionList(settingsMenuTitle, 1, settingsMenuSl);
 
-    current_state = fromSettingsMenu(menuReturn);
+    current_state = fromDiveSettingsMenu(menuReturn);
     u8g2.sendBuffer();
 }
 

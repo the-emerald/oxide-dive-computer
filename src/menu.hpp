@@ -8,11 +8,17 @@ enum DisplayState {
     DiveScreen2,
     DiveScreenSurface,
     Menu,
-        Settings,
+        DiveSettings,
             GFL1,
             GFL2,
-            Backlight,
+            WaterType,
+            PPO2Alarm,
+            NDLAlarm,
+        SystemSettings,
+            Display,
             Bluetooth,
+            ResetTissues,
+            ResetSettings,
         Gas,
         About,
 };
@@ -21,6 +27,6 @@ extern DisplayState current_state;
 
 DisplayState fromMenu(uint8_t selection);
 
-DisplayState fromSettingsMenu(uint8_t selection);
+DisplayState fromDiveSettingsMenu(uint8_t selection);
 
 DisplayState nextDisplayState(DisplayState current_state, Button input);
