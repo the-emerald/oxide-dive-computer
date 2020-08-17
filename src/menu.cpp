@@ -76,6 +76,16 @@ DisplayState fromWaterSalinityMenu(uint8_t selection) {
     }
 }
 
+DisplayState fromPPO2AlarmMenu(uint8_t selection) {
+    switch (selection) {
+        case 1:
+            drawPPO2Selection();
+            return DiveSettings;
+        default:
+            return DiveSettings;
+    }
+}
+
 DisplayState nextDisplayState(DisplayState current_state, Button input) {
     switch (current_state) {
         case DiveScreen1:

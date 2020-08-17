@@ -22,6 +22,8 @@ const char* gasMenuSl = "Gas 1\nGas 2\nGas 3\nGas 4\nGas 5\nGas 6\nGas 7\nGas 8\
 const char* waterSalinityMenuTitle = "Water Salinity";
 const char* waterSalinityMenuSl = "Fresh\nEN13319\nSalt\nBack";
 
+const char* ppO2AlarmMenuTitle = "ppO2 Alarm";
+const char* ppO2AlarmMenuSl = "On\nOff\nBack";
 
 void drawScreen(DisplayState state) {
     u8g2.setFontRefHeightAll();
@@ -44,6 +46,9 @@ void drawScreen(DisplayState state) {
             break;
         case WaterSalinity:
             drawWaterSalinity();
+            break;
+        case PPO2Alarm:
+            drawPPO2Alarm();
             break;
         case Gas:
             drawGasMenu();
@@ -86,8 +91,31 @@ void drawGasMenu() {
     current_state = fromGasMenu(menuReturn);
 }
 
+void drawPPO2Alarm() {
+    u8g2.setFont(u8g2_font_7x13B_mr);
+    uint8_t menuReturn = u8g2.userInterfaceSelectionList(ppO2AlarmMenuTitle, 1, ppO2AlarmMenuSl);
+
+    current_state = fromPPO2AlarmMenu(menuReturn);
+}
+
+void drawPPO2Selection() {
+    u8g2.setFont(u8g2_font_profont22_mr);
+
+    // TODO: Fix dummy ppO2 alarm values
+    uint8_t dummy_threshold = 0;
+
+    u8g2.userInterfaceInputValue("Set ppO2\nalarm\n(x10):", "", &dummy_threshold, 10, 20, 2, "");
+
+    char ppO2Actual[16];
+    sprintf(ppO2Actual, "%.2f", ((double) dummy_threshold)/(double) 10);
+    
+    u8g2.userInterfaceMessage("Confirm?", ppO2Actual, "", "Ok\nCancel");
+}
+
 extern void drawGFLSelection(uint8_t selection) {
     u8g2.setFont(u8g2_font_profont22_mr);
+
+    // TODO: Fix dummy GFL values
     uint8_t dummy_gfl = 0;
     uint8_t dummy_gfh = 0;
 
@@ -105,6 +133,7 @@ extern void drawGFLSelection(uint8_t selection) {
     strcat(confirmTitle, id);
     strcat(confirmTitle, "?\n");
 
+    // TODO: Refactor GF pretty-printing
     char gfl[4];
     sprintf(gfl, "%d", dummy_gfl);
 
@@ -120,7 +149,6 @@ extern void drawGFLSelection(uint8_t selection) {
 }
 
 extern void drawGasSelection(uint8_t selection) {
-    // TODO: Actually store the gas
     u8g2.setFont(u8g2_font_profont22_mr);
 
     char id[5];
@@ -130,6 +158,7 @@ extern void drawGasSelection(uint8_t selection) {
     strcat(title, id);
     strcat(title, "\n");
 
+    // TODO: Fix dummy gas values
     uint8_t dummy_o2_value = 0;
     uint8_t dummy_he_value = 0;
 
@@ -141,8 +170,7 @@ extern void drawGasSelection(uint8_t selection) {
     strcat(confirmTitle, id);
     strcat(confirmTitle, "?\n");
 
-    // TODO: Refactor this out
-
+    // TODO: Refactor gas pretty-printing
     char o2[4];
     sprintf(o2, "%d", dummy_o2_value);
 

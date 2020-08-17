@@ -15,10 +15,12 @@ extern void drawDiveSettings();
 extern void drawGasMenu();
 extern void drawAbout();
 extern void drawWaterSalinity();
+extern void drawPPO2Alarm();
 
 
 extern void drawGasSelection(uint8_t selection);
 extern void drawGFLSelection(uint8_t selection);
+extern void drawPPO2Selection();
 
 void drawTemperature();
 void drawBatteryVoltage();
