@@ -23,12 +23,11 @@ DisplayState fromMenu(uint8_t selection) {
 
 DisplayState fromDiveSettingsMenu(uint8_t selection) {
     switch (selection) {
-        case 1:
-            return GFL1;
-        case 2:
-            return GFL2;
+        case 1: case 2:
+            drawGFLSelection(selection);
+            return DiveSettings;
         case 3:
-            return WaterType;
+            return WaterSalinity;
         case 4:
             return PPO2Alarm;
         case 5:
@@ -63,7 +62,17 @@ DisplayState fromGasMenu(uint8_t selection) {
             return Menu;
         default:
             drawGasSelection(selection);
-            return Menu;
+            return Gas;
+    }
+}
+
+DisplayState fromWaterSalinityMenu(uint8_t selection) {
+    switch (selection) {
+        case 4:
+            return DiveSettings;
+        default:
+            // TODO: Write code to update salinity
+            return DiveSettings;
     }
 }
 

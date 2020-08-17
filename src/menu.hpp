@@ -9,9 +9,8 @@ enum DisplayState {
     DiveScreenSurface,
     Menu,
         DiveSettings,
-            GFL1,
-            GFL2,
-            WaterType,
+            GF,
+            WaterSalinity,
             PPO2Alarm,
             NDLAlarm,
         SystemSettings,
@@ -33,5 +32,7 @@ DisplayState fromDiveSettingsMenu(uint8_t selection);
 DisplayState fromSystemSettingsMenu(uint8_t selection);
 
 DisplayState fromGasMenu(uint8_t selection);
+
+DisplayState fromWaterSalinityMenu(uint8_t selection);
 
 DisplayState nextDisplayState(DisplayState current_state, Button input);

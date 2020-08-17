@@ -11,13 +11,16 @@ const char* menuTitle = "Menu";
 const char* menuSl = "Dive Settings\nSystem Settings\nGas\nAbout\nBack";
 
 const char* diveSettingsMenuTitle = "Dive Settings";
-const char* diveSettingsMenuSl = "GF 1\nGF 2\nWater type\nppO2 Alarm\nNDL Alarm\nBack";
+const char* diveSettingsMenuSl = "GF 1\nGF 2\nSalinity\nppO2 Alarm\nNDL Alarm\nBack";
 
 const char* systemSettingsMenuTitle = "System Settings";
 const char* systemSettingsMenuSl = "Display\nBluetooth\nReset Tissues\nReset Settings\nBack";
 
 const char* gasMenuTitle = "Gas";
-const char* gasMenuSl = "Gas 1\nGas 2\nGas 3\nGas 4\nGas 5\nGas 6\nGas 7\nGas 8\nGas 9\nGas 10\nBack";    // 1..=10 is for gases
+const char* gasMenuSl = "Gas 1\nGas 2\nGas 3\nGas 4\nGas 5\nGas 6\nGas 7\nGas 8\nGas 9\nGas 10\nBack";  // 1..=10 is for gases
+
+const char* waterSalinityMenuTitle = "Water Salinity";
+const char* waterSalinityMenuSl = "Fresh\nEN13319\nSalt\nBack";
 
 
 void drawScreen(DisplayState state) {
@@ -39,6 +42,9 @@ void drawScreen(DisplayState state) {
         case SystemSettings:
             drawDiveSettings();
             break;
+        case WaterSalinity:
+            drawWaterSalinity();
+            break;
         case Gas:
             drawGasMenu();
             break;
@@ -50,6 +56,13 @@ void drawScreen(DisplayState state) {
             break;
     }
     u8g2.sendBuffer();
+}
+
+void drawWaterSalinity() {
+    u8g2.setFont(u8g2_font_7x13B_mr);
+    uint8_t menuReturn = u8g2.userInterfaceSelectionList(waterSalinityMenuTitle, 1, waterSalinityMenuSl);
+
+    current_state = fromWaterSalinityMenu(menuReturn);
 }
 
 void drawDiveSettings() {
@@ -71,6 +84,39 @@ void drawGasMenu() {
     uint8_t menuReturn = u8g2.userInterfaceSelectionList(gasMenuTitle, 1, gasMenuSl);
 
     current_state = fromGasMenu(menuReturn);
+}
+
+extern void drawGFLSelection(uint8_t selection) {
+    u8g2.setFont(u8g2_font_profont22_mr);
+    uint8_t dummy_gfl = 0;
+    uint8_t dummy_gfh = 0;
+
+    char id[5];
+    sprintf(id, "%d", selection);
+
+    char title[16] = "Set GF ";
+    strcat(title, id);
+    strcat(title, "\n");
+
+    u8g2.userInterfaceInputValue(title, "Lo: ", &dummy_gfl, 0, 100, 3, "");
+    u8g2.userInterfaceInputValue(title, "Hi: ", &dummy_gfh, 0, 100, 3, "");
+
+    char confirmTitle[16] = "Confirm ";
+    strcat(confirmTitle, id);
+    strcat(confirmTitle, "?\n");
+
+    char gfl[4];
+    sprintf(gfl, "%d", dummy_gfl);
+
+    char gfh[4];
+    sprintf(gfh, "%d", dummy_gfh);
+
+    char gf[6] = "";
+    strcat(gf, gfl);
+    strcat(gf, "/");
+    strcat(gf, gfh);
+
+    u8g2.userInterfaceMessage(confirmTitle, gf, "", "Ok\nCancel");
 }
 
 extern void drawGasSelection(uint8_t selection) {
@@ -109,8 +155,6 @@ extern void drawGasSelection(uint8_t selection) {
     strcat(prettyGas, he);
 
     u8g2.userInterfaceMessage(confirmTitle, prettyGas, "", "Ok\nCancel");
-
-    current_state = Gas;
 }
 
 void drawAbout() {

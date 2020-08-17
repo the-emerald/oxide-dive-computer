@@ -14,8 +14,11 @@ extern void drawSystemSettings();
 extern void drawDiveSettings();
 extern void drawGasMenu();
 extern void drawAbout();
+extern void drawWaterSalinity();
+
 
 extern void drawGasSelection(uint8_t selection);
+extern void drawGFLSelection(uint8_t selection);
 
 void drawTemperature();
 void drawBatteryVoltage();
