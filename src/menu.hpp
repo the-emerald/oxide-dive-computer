@@ -18,7 +18,7 @@ enum DisplayState {
             Bluetooth,
             ResetTissues,
             ResetSettings,
-        Gas,
+        Gases,
             // No sub-menus here because they are handled differently
         About,
 };

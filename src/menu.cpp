@@ -11,7 +11,7 @@ DisplayState fromMenu(uint8_t selection) {
         case 2:
             return SystemSettings;
         case 3:
-            return Gas;
+            return Gases;
         case 4:
             return About;
         case 5:
@@ -62,7 +62,7 @@ DisplayState fromGasMenu(uint8_t selection) {
             return Menu;
         default:
             drawGasSelection(selection);
-            return Gas;
+            return Gases;
     }
 }
 

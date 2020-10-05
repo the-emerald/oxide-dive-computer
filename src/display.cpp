@@ -56,7 +56,7 @@ void drawScreen(DisplayState state) {
         case NDLAlarm:
             drawNDLAlarm();
             break;
-        case Gas:
+        case Gases:
             drawGasMenu();
             break;
         case About:
