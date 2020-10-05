@@ -6,7 +6,7 @@
 #include "display.hpp"
 #include "button.hpp"
 #include "menu.hpp"
-#include "capra.h"
+#include "libcapra_core_xtensa.h"
 
 const int LED_PIN = 13;
 
