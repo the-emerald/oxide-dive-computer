@@ -3,33 +3,35 @@
 #include <SPI.h>
 #include <Wire.h>
 
-U8G2_SH1107_SEEED_128X128_1_SW_I2C u8g2(U8G2_R0, /* clock=*/ SCL, /* data=*/ SDA, /* reset=*/ U8X8_PIN_NONE);
+#include "display.hpp"
+#include "button.hpp"
+#include "menu.hpp"
+#include "capra.h"
 
-const int BUTTON_PIN = 21;
 const int LED_PIN = 13;
 
 void setup() {
-  pinMode(BUTTON_PIN, INPUT_PULLUP);
+  pinMode(BUTTON_CYCLE_PIN, INPUT_PULLUP);
+  pinMode(BUTTON_SELECT_PIN, INPUT_PULLUP);
+
   pinMode(LED_PIN, OUTPUT);
+  initialise();
   
-  u8g2.begin();
+  u8g2.begin(BUTTON_SELECT_PIN, BUTTON_CYCLE_PIN, U8X8_PIN_NONE, U8X8_PIN_NONE, U8X8_PIN_NONE, U8X8_PIN_NONE);
 }
 
 void loop() {
-  u8g2.firstPage();
-  do {
-    u8g2.setFont(u8g2_font_ncenB10_tr);
 
-    int button = digitalRead(BUTTON_PIN);
+  if (cycleButtonPressed()) {
+    current_state = nextDisplayState(current_state, Cycle);
+  }
+  if (selectButtonPressed()) {
+    current_state = nextDisplayState(current_state, Select);
+  }
 
-    if (button == LOW) {
-      u8g2.drawStr(0,24,"Button pressed");
-      digitalWrite(LED_PIN, HIGH);
-    }
-    else {
-      u8g2.drawStr(0,24,"Hello, world!");
-      digitalWrite(LED_PIN, LOW);
-    }
+  u8g2.clearBuffer();
+  drawScreen(current_state);
 
-  } while ( u8g2.nextPage() );
+  updateCycleButtonState();
+  updateSelectButtonState();
 }
