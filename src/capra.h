@@ -23,33 +23,6 @@ static const uintptr_t TISSUE_COUNT = 16;
 /// Pressure of water vapour. (measured in bar)
 static const double WATER_VAPOUR_PRESSURE = 0.06257;
 
-/// Represents different types of DiveSegments possible.
-enum class SegmentType {
-  /// Segment represents a no decompression limit.
-  NoDeco,
-  /// Segment represents a mandatory decompression stop.
-  DecoStop,
-  /// Segment represents a bottom segment.
-  DiveSegment,
-  /// Segment represents a change in depth.
-  AscDesc,
-};
-
-struct CDiveSegment {
-  /// Type of this segment. See [`SegmentType`].
-  SegmentType segment_type;
-  /// Depth at the beginning of segment.
-  uintptr_t start_depth;
-  /// Depth at the end of segment.
-  uintptr_t end_depth;
-  /// Duration of the segment (milliseconds)
-  uint64_t time;
-  /// Ascent rate (measured in m min^-1)
-  intptr_t ascent_rate;
-  /// Descent rate (measured in m min^-1)
-  intptr_t descent_rate;
-};
-
 /// A gas mix used in a dive.
 struct Gas {
   /// Percentage fraction of oxygen in the mix.
@@ -62,14 +35,6 @@ struct Gas {
 
 extern "C" {
 
-CDiveSegment get_next_stop(const Gas *gas, intptr_t ascent_rate, intptr_t descent_rate);
-
-void initialise();
-
-void set_gfh(uintptr_t high);
-
-void set_gfl(uintptr_t low);
-
-void tick_segment(const Gas *gas, uintptr_t depth, uint64_t tick);
+Gas initialise();
 
 } // extern "C"
