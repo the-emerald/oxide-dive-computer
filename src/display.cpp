@@ -175,8 +175,8 @@ extern void drawGasSelection(uint8_t selection) {
     strcat(title, id);
     strcat(title, "\n");
 
-    uint8_t show_o2 = gases[selection-1].o2;
-    uint8_t show_he = gases[selection-1].he;
+    uint8_t show_o2 = 1;
+    uint8_t show_he = 1;
 
     u8g2.userInterfaceInputValue(title, "O2: ", &show_o2, 0, 100, 3, "");
 
@@ -199,9 +199,9 @@ extern void drawGasSelection(uint8_t selection) {
     strcat(prettyGas, he);
 
     if (u8g2.userInterfaceMessage(confirmTitle, prettyGas, "", "Ok\nCancel") == 1) {
-        gases[selection-1] = Gas {
-            show_o2, show_he, 100 - show_o2 - show_he
-        };
+        // gases[selection-1] = Gas {
+        //     show_o2, show_he, 100 - show_o2 - show_he
+        // };
     }
 }
 
