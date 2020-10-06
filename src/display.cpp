@@ -4,6 +4,7 @@
 #include <Wire.h>
 #include "display.hpp"
 #include "logo.hpp"
+#include "settings.hpp"
 
 U8G2_SH1107_SEEED_128X128_F_HW_I2C u8g2(U8G2_R0, /* clock=*/ SCL, /* data=*/ SDA, /* reset=*/ U8X8_PIN_NONE);
 
@@ -128,9 +129,8 @@ void drawPPO2Alarm() {
 extern void drawGFLSelection(uint8_t selection) {
     u8g2.setFont(u8g2_font_profont22_mr);
 
-    // TODO: Fix dummy GFL values
-    uint8_t dummy_gfl = 0;
-    uint8_t dummy_gfh = 0;
+    uint8_t show_gfl = gfls[selection-1];
+    uint8_t show_gfh = gfhs[selection-1];
 
     char id[5];
     sprintf(id, "%d", selection);
@@ -139,8 +139,8 @@ extern void drawGFLSelection(uint8_t selection) {
     strcat(title, id);
     strcat(title, "\n");
 
-    u8g2.userInterfaceInputValue(title, "Lo: ", &dummy_gfl, 0, 100, 3, "");
-    u8g2.userInterfaceInputValue(title, "Hi: ", &dummy_gfh, 0, 100, 3, "");
+    u8g2.userInterfaceInputValue(title, "Lo: ", &show_gfl, 0, 100, 3, "");
+    u8g2.userInterfaceInputValue(title, "Hi: ", &show_gfh, 0, 100, 3, "");
 
     char confirmTitle[16] = "Confirm ";
     strcat(confirmTitle, id);
@@ -148,17 +148,21 @@ extern void drawGFLSelection(uint8_t selection) {
 
     // TODO: Refactor GF pretty-printing
     char gfl[4];
-    sprintf(gfl, "%d", dummy_gfl);
+    sprintf(gfl, "%d", show_gfl);
 
     char gfh[4];
-    sprintf(gfh, "%d", dummy_gfh);
+    sprintf(gfh, "%d", show_gfh);
 
     char gf[6] = "";
     strcat(gf, gfl);
     strcat(gf, "/");
     strcat(gf, gfh);
 
-    u8g2.userInterfaceMessage(confirmTitle, gf, "", "Ok\nCancel");
+    if (u8g2.userInterfaceMessage(confirmTitle, gf, "", "Ok\nCancel") == 1) {
+        // Update the GFs
+        gfls[selection-1] = show_gfl;
+        gfhs[selection-1] = show_gfh;
+    }
 }
 
 extern void drawGasSelection(uint8_t selection) {
@@ -171,13 +175,12 @@ extern void drawGasSelection(uint8_t selection) {
     strcat(title, id);
     strcat(title, "\n");
 
-    // TODO: Fix dummy gas values
-    uint8_t dummy_o2_value = 0;
-    uint8_t dummy_he_value = 0;
+    uint8_t show_o2 = 1;
+    uint8_t show_he = 1;
 
-    u8g2.userInterfaceInputValue(title, "O2: ", &dummy_o2_value, 0, 100, 3, "");
+    u8g2.userInterfaceInputValue(title, "O2: ", &show_o2, 0, 100, 3, "");
 
-    u8g2.userInterfaceInputValue(title, "He: ", &dummy_he_value, 0, 100-dummy_o2_value, 3, "");
+    u8g2.userInterfaceInputValue(title, "He: ", &show_he, 0, 100-show_o2, 3, "");
 
     char confirmTitle[16] = "Confirm ";
     strcat(confirmTitle, id);
@@ -185,17 +188,21 @@ extern void drawGasSelection(uint8_t selection) {
 
     // TODO: Refactor gas pretty-printing
     char o2[4];
-    sprintf(o2, "%d", dummy_o2_value);
+    sprintf(o2, "%d", show_o2);
 
     char he[4];
-    sprintf(he, "%d", dummy_he_value);
+    sprintf(he, "%d", show_he);
 
     char prettyGas[6] = "";
     strcat(prettyGas, o2);
     strcat(prettyGas, "/");
     strcat(prettyGas, he);
 
-    u8g2.userInterfaceMessage(confirmTitle, prettyGas, "", "Ok\nCancel");
+    if (u8g2.userInterfaceMessage(confirmTitle, prettyGas, "", "Ok\nCancel") == 1) {
+        // gases[selection-1] = Gas {
+        //     show_o2, show_he, 100 - show_o2 - show_he
+        // };
+    }
 }
 
 void drawAbout() {
