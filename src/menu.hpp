@@ -18,7 +18,7 @@ enum DisplayState {
             Bluetooth,
             ResetTissues,
             ResetSettings,
-        Gases,
+        SetGas,
             // No sub-menus here because they are handled differently
         About,
 };
@@ -31,7 +31,7 @@ DisplayState fromDiveSettingsMenu(uint8_t selection);
 
 DisplayState fromSystemSettingsMenu(uint8_t selection);
 
-DisplayState fromGasMenu(uint8_t selection);
+DisplayState fromSetGasMenu(uint8_t selection);
 
 DisplayState fromWaterSalinityMenu(uint8_t selection);
 

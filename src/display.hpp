@@ -12,7 +12,7 @@ extern void drawDiveScreen2();
 extern void drawMenu();
 extern void drawSystemSettings();
 extern void drawDiveSettings();
-extern void drawGasMenu();
+extern void drawSetGasMenu();
 extern void drawAbout();
 extern void drawWaterSalinity();
 extern void drawPPO2Alarm();

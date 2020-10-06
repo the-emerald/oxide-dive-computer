@@ -2,7 +2,7 @@
 
 #include "libcapra_core_xtensa.h"
 
-extern Gas gases[10];
+extern Gas gases[5];
 extern uint8_t gfls[2];
 extern uint8_t gfhs[2];
 

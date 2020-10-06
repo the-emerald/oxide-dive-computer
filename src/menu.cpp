@@ -11,7 +11,7 @@ DisplayState fromMenu(uint8_t selection) {
         case 2:
             return SystemSettings;
         case 3:
-            return Gases;
+            return SetGas;
         case 4:
             return About;
         case 5:
@@ -56,13 +56,13 @@ DisplayState fromSystemSettingsMenu(uint8_t selection) {
     }
 }
 
-DisplayState fromGasMenu(uint8_t selection) {
+DisplayState fromSetGasMenu(uint8_t selection) {
     switch (selection) {
-        case 11:
+        case 6:
             return Menu;
         default:
             drawGasSelection(selection);
-            return Gases;
+            return SetGas;
     }
 }
 

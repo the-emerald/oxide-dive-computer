@@ -9,7 +9,7 @@
 U8G2_SH1107_SEEED_128X128_F_HW_I2C u8g2(U8G2_R0, /* clock=*/ SCL, /* data=*/ SDA, /* reset=*/ U8X8_PIN_NONE);
 
 const char* menuTitle = "Menu";
-const char* menuSl = "Dive Settings\nSystem Settings\nGas\nAbout\nBack";
+const char* menuSl = "Dive Settings\nSystem Settings\nSet Gas\nAbout\nBack";
 
 const char* diveSettingsMenuTitle = "Dive Settings";
 const char* diveSettingsMenuSl = "GF 1\nGF 2\nSalinity\nppO2 Alarm\nNDL Alarm\nBack";
@@ -17,8 +17,8 @@ const char* diveSettingsMenuSl = "GF 1\nGF 2\nSalinity\nppO2 Alarm\nNDL Alarm\nB
 const char* systemSettingsMenuTitle = "System Settings";
 const char* systemSettingsMenuSl = "Display\nBluetooth\nReset Tissues\nReset Settings\nBack";
 
-const char* gasMenuTitle = "Gas";
-const char* gasMenuSl = "Gas 1\nGas 2\nGas 3\nGas 4\nGas 5\nGas 6\nGas 7\nGas 8\nGas 9\nGas 10\nBack";  // 1..=10 is for gases
+const char* gasMenuTitle = "Set Gas";
+const char* gasMenuSl = "Gas 1\nGas 2\nGas 3\nGas 4\nGas 5\nBack";  // 1..=5 is for gases
 
 const char* waterSalinityMenuTitle = "Water Salinity";
 const char* waterSalinityMenuSl = "Fresh\nEN13319\nSalt\nBack";
@@ -57,8 +57,8 @@ void drawScreen(DisplayState state) {
         case NDLAlarm:
             drawNDLAlarm();
             break;
-        case Gases:
-            drawGasMenu();
+        case SetGas:
+            drawSetGasMenu();
             break;
         case About:
             drawAbout();
@@ -114,11 +114,11 @@ void drawSystemSettings() {
     current_state = fromDiveSettingsMenu(menuReturn);
 }
 
-void drawGasMenu() {
+void drawSetGasMenu() {
     u8g2.setFont(u8g2_font_7x13B_mr);
     uint8_t menuReturn = u8g2.userInterfaceSelectionList(gasMenuTitle, 1, gasMenuSl);
 
-    current_state = fromGasMenu(menuReturn);
+    current_state = fromSetGasMenu(menuReturn);
 }
 
 void drawPPO2Alarm() {

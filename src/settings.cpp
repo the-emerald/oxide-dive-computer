@@ -1,24 +1,9 @@
 #include "settings.hpp"
 
-Gas gases[10] = {
+Gas gases[5] = {
     Gas {
         21, 0, 79
     },
-    Gas {
-        21, 0, 79
-    },    
-    Gas {
-        21, 0, 79
-    },    
-    Gas {
-        21, 0, 79
-    },    
-    Gas {
-        21, 0, 79
-    },    
-    Gas {
-        21, 0, 79
-    },    
     Gas {
         21, 0, 79
     },    
