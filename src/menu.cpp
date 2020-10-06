@@ -1,6 +1,7 @@
 #include "menu.hpp"
 #include <cstdint>
 #include "display.hpp"
+#include "settings.hpp"
 
 DisplayState current_state = DiveScreen1;
 
@@ -15,6 +16,15 @@ DisplayState fromMenu(uint8_t selection) {
         case 4:
             return About;
         case 5:
+            // TODO: Remove this when finished debugging
+            if (computer_mode == ComputerMode::Underwater) {
+                computer_mode = ComputerMode::Surface;
+            }
+            else {
+                computer_mode = ComputerMode::Underwater;
+            }
+            return DiveScreen1;
+        case 6:
             return DiveScreen1;
         default:
             return Menu;

@@ -9,7 +9,7 @@
 U8G2_SH1107_SEEED_128X128_F_HW_I2C u8g2(U8G2_R0, /* clock=*/ SCL, /* data=*/ SDA, /* reset=*/ U8X8_PIN_NONE);
 
 const char* menuTitle = "Menu";
-const char* menuSl = "Dive Settings\nSystem Settings\nSet Gas\nAbout\nBack";
+const char* menuSl = "Dive Settings\nSystem Settings\nSet Gas\nAbout\nDEBUG ComputerMode\nBack";
 
 const char* diveSettingsMenuTitle = "Dive Settings";
 const char* diveSettingsMenuSl = "GF 1\nGF 2\nSalinity\nppO2 Alarm\nNDL Alarm\nBack";

@@ -25,3 +25,5 @@ uint8_t gfhs[2] = {100, 100};
 uint8_t ndl_alarm = ~0;
 uint8_t current_gas = 0;
 uint8_t current_gf = 0;
+
+ComputerMode computer_mode = Surface;

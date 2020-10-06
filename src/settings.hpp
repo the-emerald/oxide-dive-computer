@@ -9,3 +9,10 @@ extern uint8_t gfhs[2];
 extern uint8_t ndl_alarm;
 extern uint8_t current_gas;
 extern uint8_t current_gf;
+
+enum ComputerMode {
+    Surface,
+    Underwater
+};
+
+extern ComputerMode computer_mode;
