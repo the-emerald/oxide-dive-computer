@@ -7,8 +7,6 @@
 #include "button.hpp"
 #include "menu.hpp"
 #include "libcapra_core_xtensa.h"
-// #include "ltx.h"
-
 
 const int LED_PIN = 13;
 
