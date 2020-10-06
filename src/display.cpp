@@ -80,15 +80,17 @@ void drawNDLAlarmSelection() {
     u8g2.setFont(u8g2_font_profont22_mr);
 
     // TODO: Fix dummy NDL alarm values
-    uint8_t dummy_alarm = 0;
+    uint8_t show_alarm = ndl_alarm;
 
-    u8g2.userInterfaceInputValue("Set NDL\nalarm:\n", "", &dummy_alarm, 1, 10, 2, " min");
+    u8g2.userInterfaceInputValue("Set NDL\nalarm:\n", "", &show_alarm, 1, 10, 2, " min");
 
     char alarm[16];
-    sprintf(alarm, "%d", dummy_alarm);
+    sprintf(alarm, "%d", show_alarm);
     strcat(alarm, " min");
     
-    u8g2.userInterfaceMessage("Confirm?", alarm, "", "Ok\nCancel");
+    if (u8g2.userInterfaceMessage("Confirm?", alarm, "", "Ok\nCancel") == 1) {
+        ndl_alarm = show_alarm;
+    }
 }
 
 void drawWaterSalinity() {
@@ -175,8 +177,8 @@ extern void drawGasSelection(uint8_t selection) {
     strcat(title, id);
     strcat(title, "\n");
 
-    uint8_t show_o2 = 1;
-    uint8_t show_he = 1;
+    uint8_t show_o2 = gases[selection - 1].o2;
+    uint8_t show_he = gases[selection - 1].he;
 
     u8g2.userInterfaceInputValue(title, "O2: ", &show_o2, 0, 100, 3, "");
 
@@ -199,9 +201,9 @@ extern void drawGasSelection(uint8_t selection) {
     strcat(prettyGas, he);
 
     if (u8g2.userInterfaceMessage(confirmTitle, prettyGas, "", "Ok\nCancel") == 1) {
-        // gases[selection-1] = Gas {
-        //     show_o2, show_he, 100 - show_o2 - show_he
-        // };
+        gases[selection-1] = Gas {
+            show_o2, show_he, 100 - show_o2 - show_he
+        };
     }
 }
 
@@ -320,7 +322,19 @@ void drawGas() {
     u8g2.drawStr(0, 104, "Gas");
 
     u8g2.setFont(u8g2_font_10x20_mn);
-    u8g2.drawStr(0, 128, "21/0");
+
+    char o2[4];
+    sprintf(o2, "%d", gases[current_gas].o2);
+
+    char he[4];
+    sprintf(he, "%d", gases[current_gas].he);
+
+    char prettyGas[6] = "";
+    strcat(prettyGas, o2);
+    strcat(prettyGas, "/");
+    strcat(prettyGas, he);
+
+    u8g2.drawStr(0, 128, prettyGas);
 }
 
 void drawTTS() {
