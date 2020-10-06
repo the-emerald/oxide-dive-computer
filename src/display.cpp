@@ -32,11 +32,11 @@ const char* ndlAlarmMenuSl = "On\nOff\nBack";
 void drawScreen(DisplayState state) {
     u8g2.setFontRefHeightAll();
     switch (state) {
-        case DiveScreen1:
-            drawDiveScreen1();
+        case Screen1:
+            drawScreen1();
             break;
-        case DiveScreen2:
-            drawDiveScreen2();
+        case Screen2:
+            drawScreen2();
             break;
         case Menu:
             drawMenu();
@@ -223,18 +223,41 @@ void drawMenu() {
     current_state = fromMenu(menuReturn);
 }
 
-void drawDiveScreen2() {
+void drawScreen2() {
+    if (computer_mode == ComputerMode::Underwater) {
+        drawTemperature();
+        drawppO2();
+        drawGF();
+        drawBatteryVoltage();
+    }
+    else {
+        drawTemperature();      // Same location as mode 1
+        drawSalinityField();
+        drawCNS();
+        drawBatteryVoltage();   // Same location as mode 1
+    }
+
     u8g2.drawVLine(62, 0, 87);
-
-    drawTemperature();
-    drawppO2();
     u8g2.drawHLine(0, 41, 128);
-
-    drawGF();
-    drawBatteryVoltage();
     u8g2.drawHLine(0, 87, 128);
 
     drawTissuePressure();
+}
+
+void drawSalinityField() {
+    u8g2.setFont(u8g2_font_9x15B_mr);
+    u8g2.drawStr(70, 12, "Water");
+
+    u8g2.setFont(u8g2_font_profont22_mf);
+    u8g2.drawStr(70, 36, "FRESH");
+}
+
+void drawCNS() {
+    u8g2.setFont(u8g2_font_9x15B_mr);
+    u8g2.drawStr(0, 58, "CNS");
+
+    u8g2.setFont(u8g2_font_inb16_mr);
+    u8g2.drawStr(0, 82, "122%");
 }
 
 void drawTemperature() {
@@ -273,19 +296,75 @@ void drawTissuePressure() {
     // TODO: Draw tissue pressures
 }
 
-void drawDiveScreen1() {
+void drawScreen1() {
+    if (computer_mode == ComputerMode::Underwater) {
+        drawTime();
+        drawNextStopDepth();
+
+        drawDepth();
+        drawRuntime();
+
+        drawGas();
+        drawTTS();
+    }
+    else {
+        drawSI();
+        drawNoFly();
+
+        drawMBar();
+        drawDesat();
+
+        drawGas();      // Same location as mode 1
+        drawGFTwo();
+
+    }
+
     u8g2.drawVLine(62, 0, 128);
-    drawNDL();
-    drawNextStopDepth();
     u8g2.drawHLine(0, 41, 128);
-    drawDepth();
-    drawRuntime();
     u8g2.drawHLine(0, 87, 128);
-    drawGas();
-    drawTTS();
 }
 
-void drawNDL() {
+void drawGFTwo() {
+    u8g2.setFont(u8g2_font_9x15B_mr);
+    u8g2.drawStr(70, 104, "GF");
+
+    u8g2.setFont(u8g2_font_10x20_mn);
+    u8g2.drawStr(70, 128, "30/70");
+}
+
+void drawSI() {
+    u8g2.setFont(u8g2_font_9x15B_mr);
+    u8g2.drawStr(0, 12, "SI");
+
+    u8g2.setFont(u8g2_font_inb16_mf);
+    u8g2.drawStr(0, 36, "9d");
+}
+
+void drawNoFly() {
+    u8g2.setFont(u8g2_font_9x15B_mr);
+    u8g2.drawStr(70, 12, "No Fly");
+
+    u8g2.setFont(u8g2_font_inb16_mf);
+    u8g2.drawStr(70, 36, "23h");
+}
+
+void drawMBar() {
+    u8g2.setFont(u8g2_font_9x15B_mr);
+    u8g2.drawStr(0, 58, "mBar");
+
+    u8g2.setFont(u8g2_font_inb16_mn);
+    u8g2.drawStr(0, 82, "1015");
+}
+
+void drawDesat() {
+    u8g2.setFont(u8g2_font_9x15B_mr);
+    u8g2.drawStr(70, 58, "Desat");
+
+    u8g2.setFont(u8g2_font_inb16_mf);
+    u8g2.drawStr(70, 82, "48h");
+}
+
+void drawTime() {
     u8g2.setFont(u8g2_font_9x15B_mr);
     u8g2.drawStr(0, 12, "Time");
 

@@ -3,7 +3,7 @@
 #include "display.hpp"
 #include "settings.hpp"
 
-DisplayState current_state = DiveScreen1;
+DisplayState current_state = Screen1;
 
 DisplayState fromMenu(uint8_t selection) {
     switch (selection) {
@@ -23,9 +23,9 @@ DisplayState fromMenu(uint8_t selection) {
             else {
                 computer_mode = ComputerMode::Underwater;
             }
-            return DiveScreen1;
+            return Screen1;
         case 6:
-            return DiveScreen1;
+            return Screen1;
         default:
             return Menu;
     }
@@ -108,17 +108,17 @@ DisplayState fromNDLAlarmMenu(uint8_t selection) {
 
 DisplayState nextDisplayState(DisplayState current_state, Button input) {
     switch (current_state) {
-        case DiveScreen1:
+        case Screen1:
             switch (input) {
                 case Cycle:
-                    return DiveScreen2;
+                    return Screen2;
                 case Select:
                     return Menu;
             }
-        case DiveScreen2:
+        case Screen2:
             switch (input) {
                 case Cycle:
-                    return DiveScreen1;
+                    return Screen1;
                 case Select:
                     return Menu;
             }

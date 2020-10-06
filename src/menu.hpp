@@ -4,8 +4,8 @@
 #include <cstdint>
 
 enum DisplayState {
-    DiveScreen1,
-    DiveScreen2,
+    Screen1,
+    Screen2,
     DiveScreenSurface,
     Menu,
         DiveSettings,
