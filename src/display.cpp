@@ -226,17 +226,8 @@ extern void drawGFSelection(uint8_t selection) {
     strcat(confirmTitle, id);
     strcat(confirmTitle, "?\n");
 
-    // TODO: Refactor GF pretty-printing
-    char gfl[4];
-    sprintf(gfl, "%d", show_gfl);
-
-    char gfh[4];
-    sprintf(gfh, "%d", show_gfh);
-
     char gf[6] = "";
-    strcat(gf, gfl);
-    strcat(gf, "/");
-    strcat(gf, gfh);
+    populatePrettyGF(show_gfl, show_gfh, gf);
 
     if (u8g2.userInterfaceMessage(confirmTitle, gf, "", "Ok\nCancel") == 1) {
         // Update the GFs
@@ -353,8 +344,14 @@ void drawGF() {
     u8g2.setFont(u8g2_font_9x15B_mr);
     u8g2.drawStr(0, 58, "GF");
 
+    uint8_t cur_gfl = getGFL(getSelectedGF());
+    uint8_t cur_gfh = getGFH(getSelectedGF());
+
+    char gf[6] = "";
+    populatePrettyGF(cur_gfl, cur_gfh, gf);
+
     u8g2.setFont(u8g2_font_10x20_mn);
-    u8g2.drawStr(0, 82, "30/70");
+    u8g2.drawStr(0, 82, gf);
 }
 
 void drawBatteryVoltage() {
@@ -401,8 +398,14 @@ void drawGFSurface() {
     u8g2.setFont(u8g2_font_9x15B_mr);
     u8g2.drawStr(70, 104, "GF");
 
+    uint8_t cur_gfl = getGFL(getSelectedGF());
+    uint8_t cur_gfh = getGFH(getSelectedGF());
+
+    char gf[6] = "";
+    populatePrettyGF(cur_gfl, cur_gfh, gf);
+
     u8g2.setFont(u8g2_font_10x20_mn);
-    u8g2.drawStr(70, 128, "30/70");
+    u8g2.drawStr(70, 128, gf);
 }
 
 void drawSI() {
@@ -501,4 +504,16 @@ void populatePrettyGas(uintptr_t o2, uintptr_t he, char output[6]) {
     strcat(output, _o2);
     strcat(output, "/");
     strcat(output, _he);
+}
+
+void populatePrettyGF(uint8_t lo, uint8_t hi, char output[6]) {
+    char _lo[4];
+    sprintf(_lo, "%d", lo);
+
+    char _hi[4];
+    sprintf(_hi, "%d", hi);
+
+    strcat(output, _lo);
+    strcat(output, "/");
+    strcat(output, _hi);
 }

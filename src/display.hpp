@@ -50,3 +50,4 @@ void drawGas();
 void drawTTS();
 
 void populatePrettyGas(uintptr_t o2, uintptr_t he, char output[6]);
+void populatePrettyGF(uint8_t lo, uint8_t hi, char output[6]);
