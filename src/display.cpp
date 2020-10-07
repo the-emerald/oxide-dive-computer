@@ -8,17 +8,23 @@
 
 U8G2_SH1107_SEEED_128X128_F_HW_I2C u8g2(U8G2_R0, /* clock=*/ SCL, /* data=*/ SDA, /* reset=*/ U8X8_PIN_NONE);
 
-const char* menuTitle = "Menu";
-const char* menuSl = "Dive Settings\nSystem Settings\nSet Gas\nAbout\nDEBUG ComputerMode\nBack";
+const char* surfaceMenuTitle = "Menu";
+const char* surfaceMenuSl = "Dive Settings\nSystem Settings\nSet Gas\nAbout\nDEBUG ComputerMode\nBack";
+
+const char* underwaterMenuTitle = "Menu";
+const char* underwaterMenuSl = "Switch Gas\nToggle GF\nSet GF\nSet Gas\nDEBUG ComputerMode\nBack";
 
 const char* diveSettingsMenuTitle = "Dive Settings";
-const char* diveSettingsMenuSl = "GF 1\nGF 2\nSalinity\nppO2 Alarm\nNDL Alarm\nBack";
+const char* diveSettingsMenuSl = "GF 1\nGF 2\nSalinity\nppO2 Alarm\nNDL Alarm\nBack"; 
+
+const char* setGFMenuTitle = "Set GF";
+const char* setGFMenuSl = "GF 1\nGF 2\nBack";
 
 const char* systemSettingsMenuTitle = "System Settings";
 const char* systemSettingsMenuSl = "Display\nBluetooth\nReset Tissues\nReset Settings\nBack";
 
-const char* gasMenuTitle = "Set Gas";
-const char* gasMenuSl = "Gas 1\nGas 2\nGas 3\nGas 4\nGas 5\nBack";  // 1..=5 is for gases
+const char* gasSurfaceMenuTitle = "Set Gas";
+const char* gasSurfaceMenuSl = "Gas 1\nGas 2\nGas 3\nGas 4\nGas 5\nBack";  // 1..=5 is for gases
 
 const char* waterSalinityMenuTitle = "Water Salinity";
 const char* waterSalinityMenuSl = "Fresh\nEN13319\nSalt\nBack";
@@ -38,8 +44,23 @@ void drawScreen(DisplayState state) {
         case Screen2:
             drawScreen2();
             break;
-        case Menu:
-            drawMenu();
+        case UnderwaterMenu:
+            drawUnderwaterMenu();
+            break;
+        // case ToggleGF:
+        //     drawToggleGF();
+        //     break;
+        case SetGF:
+            drawSetGFMenu();
+            break;
+        case SwitchGas:
+            drawSwitchGasMenu();
+            break;
+        case SetGasUnderwater:
+            drawSetGasUnderwaterMenu();
+            break;
+        case SurfaceMenu:
+            drawSurfaceMenu();
             break;
         // Sub-menus
         case DiveSettings:
@@ -57,8 +78,8 @@ void drawScreen(DisplayState state) {
         case NDLAlarm:
             drawNDLAlarm();
             break;
-        case SetGas:
-            drawSetGasMenu();
+        case SetGasSurface:
+            drawSetGasSurfaceMenu();
             break;
         case About:
             drawAbout();
@@ -68,6 +89,39 @@ void drawScreen(DisplayState state) {
             break;
     }
     u8g2.sendBuffer();
+}
+
+void drawSetGasUnderwaterMenu() {
+    u8g2.setFont(u8g2_font_7x13B_mr);
+    uint8_t menuReturn = u8g2.userInterfaceSelectionList(gasSurfaceMenuTitle, 1, gasSurfaceMenuSl);
+
+    current_state = fromSetGasUnderwaterMenu(menuReturn);
+}
+
+void drawSetGFMenu() {
+    u8g2.setFont(u8g2_font_7x13B_mr);
+    uint8_t menuReturn = u8g2.userInterfaceSelectionList(setGFMenuTitle, 1, setGFMenuSl);
+
+    current_state = fromSetGFMenu(menuReturn);
+}
+
+void drawUnderwaterMenu() {
+    u8g2.setFont(u8g2_font_7x13B_mr);
+    uint8_t menuReturn = u8g2.userInterfaceSelectionList(underwaterMenuTitle, 1, underwaterMenuSl);
+
+    current_state = fromUnderwaterMenu(menuReturn);
+}
+
+void drawSwitchGasMenu() {
+    // Draw switch gas
+    u8g2.setFont(u8g2_font_7x13B_mr);
+    uint8_t menuReturn = u8g2.userInterfaceSelectionList(gasSurfaceMenuTitle, 1, gasSurfaceMenuSl);
+
+    current_state = fromSwitchGasMenu(menuReturn);
+}
+
+void drawToggleGF() {
+    // TODO: Do you want a confirmation?
 }
 
 void drawNDLAlarm() {
@@ -114,11 +168,11 @@ void drawSystemSettings() {
     current_state = fromDiveSettingsMenu(menuReturn);
 }
 
-void drawSetGasMenu() {
+void drawSetGasSurfaceMenu() {
     u8g2.setFont(u8g2_font_7x13B_mr);
-    uint8_t menuReturn = u8g2.userInterfaceSelectionList(gasMenuTitle, 1, gasMenuSl);
+    uint8_t menuReturn = u8g2.userInterfaceSelectionList(gasSurfaceMenuTitle, 1, gasSurfaceMenuSl);
 
-    current_state = fromSetGasMenu(menuReturn);
+    current_state = fromSetGasSurfaceMenu(menuReturn);
 }
 
 void drawPPO2Alarm() {
@@ -216,11 +270,11 @@ void drawAbout() {
     u8g2.drawStr(20, 110, "Powered by Capra");
 }
 
-void drawMenu() {
+void drawSurfaceMenu() {
     u8g2.setFont(u8g2_font_7x13B_mr);
-    uint8_t menuReturn = u8g2.userInterfaceSelectionList(menuTitle, 1, menuSl);
+    uint8_t menuReturn = u8g2.userInterfaceSelectionList(surfaceMenuTitle, 1, surfaceMenuSl);
 
-    current_state = fromMenu(menuReturn);
+    current_state = fromSurfaceMenu(menuReturn);
 }
 
 void drawScreen2() {

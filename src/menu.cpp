@@ -5,14 +5,62 @@
 
 DisplayState current_state = Screen1;
 
-DisplayState fromMenu(uint8_t selection) {
+DisplayState fromSetGFMenu(uint8_t selection) {
+    switch (selection) {
+        case 3:
+            return UnderwaterMenu;
+        default:
+            drawGFLSelection(selection);
+            return UnderwaterMenu;
+    }
+}
+
+
+DisplayState fromUnderwaterMenu(uint8_t selection) {
+    switch (selection) {
+        case 1:
+            return SwitchGas;
+        case 2:
+            // TODO: Toggle GF business logic
+            return Screen1;
+        case 3:
+            return SetGF;
+        case 4:
+            return SetGasUnderwater;
+        case 5:
+            // TODO: Remove this when finished debugging
+            if (computer_mode == ComputerMode::Underwater) {
+                computer_mode = ComputerMode::Surface;
+            }
+            else {
+                computer_mode = ComputerMode::Underwater;
+            }
+            return Screen1;
+        case 6:
+            return Screen1;
+        default:
+            return UnderwaterMenu;
+    }
+}
+
+DisplayState fromSwitchGasMenu(uint8_t selection) {
+    switch (selection) {
+        case 6:
+            return UnderwaterMenu;
+        default:
+            // TODO: Make it confirm choice?
+            return Screen1;
+    }
+}
+
+DisplayState fromSurfaceMenu(uint8_t selection) {
     switch (selection) {
         case 1:
             return DiveSettings;
         case 2:
             return SystemSettings;
         case 3:
-            return SetGas;
+            return SetGasSurface;
         case 4:
             return About;
         case 5:
@@ -27,7 +75,7 @@ DisplayState fromMenu(uint8_t selection) {
         case 6:
             return Screen1;
         default:
-            return Menu;
+            return SurfaceMenu;
     }
 }
 
@@ -43,7 +91,7 @@ DisplayState fromDiveSettingsMenu(uint8_t selection) {
         case 5:
             return NDLAlarm;
         case 6:
-            return Menu;
+            return SurfaceMenu;
         default:
             return DiveSettings;
     }
@@ -60,19 +108,29 @@ DisplayState fromSystemSettingsMenu(uint8_t selection) {
         case 4:
             return ResetSettings;
         case 5:
-            return Menu;
+            return SurfaceMenu;
         default:
-            return Menu;
+            return SurfaceMenu;
     }
 }
 
-DisplayState fromSetGasMenu(uint8_t selection) {
+DisplayState fromSetGasSurfaceMenu(uint8_t selection) {
     switch (selection) {
         case 6:
-            return Menu;
+            return SurfaceMenu;
         default:
             drawGasSelection(selection);
-            return SetGas;
+            return SetGasSurface;
+    }
+}
+
+DisplayState fromSetGasUnderwaterMenu(uint8_t selection) {
+        switch (selection) {
+        case 6:
+            return UnderwaterMenu;
+        default:
+            drawGasSelection(selection);
+            return Screen1;
     }
 }
 
@@ -106,6 +164,13 @@ DisplayState fromNDLAlarmMenu(uint8_t selection) {
     }
 }
 
+DisplayState determineMenuTransition() {
+    if (computer_mode == ComputerMode::Underwater) {
+        return UnderwaterMenu;
+    }
+    return SurfaceMenu;
+}
+
 DisplayState nextDisplayState(DisplayState current_state, Button input) {
     switch (current_state) {
         case Screen1:
@@ -113,19 +178,20 @@ DisplayState nextDisplayState(DisplayState current_state, Button input) {
                 case Cycle:
                     return Screen2;
                 case Select:
-                    return Menu;
+                    return determineMenuTransition();
             }
         case Screen2:
             switch (input) {
                 case Cycle:
                     return Screen1;
                 case Select:
-                    return Menu;
+                    return determineMenuTransition();
             }
         case About:
-            return Menu;
+            return SurfaceMenu;
         // Default: do not change any state
         default:
             return current_state;
     }
 }
+

@@ -9,10 +9,15 @@ extern void drawScreen(DisplayState state);
 
 extern void drawScreen1();
 extern void drawScreen2();
-extern void drawMenu();
+extern void drawUnderwaterMenu();
+// extern void drawToggleGF();
+extern void drawSwitchGasMenu();
+extern void drawSetGFMenu();
+extern void drawSetGasUnderwaterMenu();
+extern void drawSurfaceMenu();
 extern void drawSystemSettings();
 extern void drawDiveSettings();
-extern void drawSetGasMenu();
+extern void drawSetGasSurfaceMenu();
 extern void drawAbout();
 extern void drawWaterSalinity();
 extern void drawPPO2Alarm();
