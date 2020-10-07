@@ -27,10 +27,8 @@ void setup() {
   Serial.begin(115200);
 
   EEPROM.begin(256);
-  setSelectedGas(0);
-  setSelectedGF(0);
-  setNDLAlarm(0);
-
+  initialiseEEPROMOnce();
+  
   pinMode(BUTTON_CYCLE_PIN, INPUT_PULLUP);
   pinMode(BUTTON_SELECT_PIN, INPUT_PULLUP);
 

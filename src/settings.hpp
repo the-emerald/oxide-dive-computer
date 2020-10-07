@@ -29,3 +29,6 @@ enum ComputerMode {
 };
 
 extern ComputerMode computer_mode;
+
+// The following section is useful for mockup purposes only.
+extern void initialiseEEPROMOnce();

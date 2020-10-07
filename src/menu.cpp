@@ -169,6 +169,8 @@ DisplayState fromNDLAlarmMenu(uint8_t selection) {
         case 1:
             drawNDLAlarmSelection();
             return DiveSettings;
+        case 2:
+            setNDLAlarm(~0);
         default:
             return DiveSettings;
     }
@@ -204,4 +206,3 @@ DisplayState nextDisplayState(DisplayState current_state, Button input) {
             return current_state;
     }
 }
-

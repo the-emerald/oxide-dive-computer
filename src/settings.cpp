@@ -77,3 +77,31 @@ void array_to_double(uint8_t array[8], double val) {
 }
 
 ComputerMode computer_mode = Surface;
+
+// Initialises the EEPROM once. This makes sure sane values are set inside the EEPROM following
+// a wipe. Afterwards, it toggles a flag so it will not overwrite user settings.
+extern void initialiseEEPROMOnce() {
+    if (EEPROM.read(255) == 1) {
+        return;
+    }
+    // Set up gas
+    Gas air = Gas { 21, 0, 79 };
+    setSelectedGas(0);
+    for (int i = 0; i < 5; i++) {
+        setGas(&air, i);
+    }
+
+    setSelectedGF(0);
+    // GF1
+    setGFL(0, 99);
+    setGFH(0, 99);
+
+    // GF2
+    setGFL(1, 99);
+    setGFH(1, 99);
+
+    // NDL alarm
+    setNDLAlarm(5);
+
+    EEPROM.write(255, 1);
+}
