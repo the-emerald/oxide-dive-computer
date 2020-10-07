@@ -28,7 +28,7 @@ extern void drawCNS();
 extern void drawSI();
 extern void drawMBar();
 extern void drawDesat();
-extern void drawGFTwo();
+extern void drawGFSurface();
 extern void drawNoFly();
 
 extern void drawGasSelection(uint8_t selection);
@@ -47,3 +47,5 @@ void drawDepth();
 void drawRuntime();
 void drawGas();
 void drawTTS();
+
+void populatePrettyGas(uintptr_t o2, uintptr_t he, char output[6]);

@@ -1,29 +1,79 @@
 #include "settings.hpp"
+#include "EEPROM.h"
 
-Gas gases[5] = {
-    Gas {
-        21, 0, 79
-    },
-    Gas {
-        21, 0, 79
-    },    
-    Gas {
-        21, 0, 79
-    },    
-    Gas {
-        21, 0, 79
-    },    
-    Gas {
-        21, 0, 79
-    }
-};
+const int gfl_address[] = {0, 1};
+const int gfh_address[] = {2, 3};
+const int gas_o2_address[] = {4, 5, 6, 7, 8};
+const int gas_he_address[] = {9, 10, 11, 12, 13};
+const int selected_gas_address = 14;
+const int selected_gf_address = 15;
+const int ndl_alarm_address = 16;
 
-uint8_t gfls[2] = {100, 100};
+Gas getGas(uint8_t idx) {
+    uint8_t o2 = EEPROM.read(gas_o2_address[idx]);
+    uint8_t he = EEPROM.read(gas_he_address[idx]);
+    return Gas {
+        o2, he, 100 - o2 - he
+    };
+}
 
-uint8_t gfhs[2] = {100, 100};
+void setGas(const Gas *gas, uint8_t idx) {
+    EEPROM.write(gas_o2_address[idx], gas->o2);
+    EEPROM.write(gas_he_address[idx], gas->he);
+    EEPROM.commit();
+}
 
-uint8_t ndl_alarm = ~0;
-uint8_t current_gas = 0;
-uint8_t current_gf = 0;
+uint8_t getGFL(uint8_t idx) {
+    return EEPROM.read(gfl_address[idx]);
+}
+
+void setGFL(uint8_t idx, uint8_t val) {
+    EEPROM.write(gfl_address[idx], val);
+    EEPROM.commit();
+}
+
+uint8_t getGFH(uint8_t idx) {
+    return EEPROM.read(gfh_address[idx]);
+}
+
+void setGFH(uint8_t idx, uint8_t val) {
+    EEPROM.write(gfh_address[idx], val);
+    EEPROM.commit();
+}
+
+uint8_t getSelectedGas() {
+    return EEPROM.read(selected_gas_address);
+}
+
+void setSelectedGas(uint8_t val) {
+    EEPROM.write(selected_gas_address, val);
+    EEPROM.commit();
+}
+
+uint8_t getSelectedGF() {
+    return EEPROM.read(selected_gf_address);
+}
+
+void setSelectedGF(uint8_t val) {
+    EEPROM.write(selected_gf_address, val);
+    EEPROM.commit();
+}
+
+uint8_t getNDLAlarm() {
+    return EEPROM.read(ndl_alarm_address);
+}
+
+void setNDLAlarm(uint8_t val) {
+    EEPROM.write(ndl_alarm_address, val);
+    EEPROM.commit();
+}
+
+void double_to_array(uint8_t array[8], double val) {
+    // TODO: Implement this
+}
+
+void array_to_double(uint8_t array[8], double val) {
+    // TODO: Implement this
+}
 
 ComputerMode computer_mode = Surface;

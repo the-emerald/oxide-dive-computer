@@ -133,8 +133,10 @@ void drawNDLAlarm() {
 void drawNDLAlarmSelection() {
     u8g2.setFont(u8g2_font_profont22_mr);
 
-    // TODO: Fix dummy NDL alarm values
-    uint8_t show_alarm = ndl_alarm;
+    uint8_t show_alarm = getNDLAlarm();
+    if (show_alarm == ~0) {
+        show_alarm = 0;
+    }
 
     u8g2.userInterfaceInputValue("Set NDL\nalarm:\n", "", &show_alarm, 1, 10, 2, " min");
 
@@ -143,7 +145,7 @@ void drawNDLAlarmSelection() {
     strcat(alarm, " min");
     
     if (u8g2.userInterfaceMessage("Confirm?", alarm, "", "Ok\nCancel") == 1) {
-        ndl_alarm = show_alarm;
+        setNDLAlarm(show_alarm);
     }
 }
 
@@ -183,10 +185,11 @@ void drawPPO2Alarm() {
 }
 
 extern void drawGFLSelection(uint8_t selection) {
+    selection -= 1;
     u8g2.setFont(u8g2_font_profont22_mr);
 
-    uint8_t show_gfl = gfls[selection-1];
-    uint8_t show_gfh = gfhs[selection-1];
+    uint8_t show_gfl = getGFL(selection);
+    uint8_t show_gfh = getGFH(selection);
 
     char id[5];
     sprintf(id, "%d", selection);
@@ -216,12 +219,13 @@ extern void drawGFLSelection(uint8_t selection) {
 
     if (u8g2.userInterfaceMessage(confirmTitle, gf, "", "Ok\nCancel") == 1) {
         // Update the GFs
-        gfls[selection-1] = show_gfl;
-        gfhs[selection-1] = show_gfh;
+        setGFL(selection, show_gfl);
+        setGFH(selection, show_gfh);
     }
 }
 
 extern void drawGasSelection(uint8_t selection) {
+    selection -= 1;
     u8g2.setFont(u8g2_font_profont22_mr);
 
     char id[5];
@@ -231,8 +235,10 @@ extern void drawGasSelection(uint8_t selection) {
     strcat(title, id);
     strcat(title, "\n");
 
-    uint8_t show_o2 = gases[selection - 1].o2;
-    uint8_t show_he = gases[selection - 1].he;
+    Gas gas_to_edit = getGas(selection);
+
+    uint8_t show_o2 = gas_to_edit.o2;
+    uint8_t show_he = gas_to_edit.he;
 
     u8g2.userInterfaceInputValue(title, "O2: ", &show_o2, 0, 100, 3, "");
 
@@ -243,21 +249,14 @@ extern void drawGasSelection(uint8_t selection) {
     strcat(confirmTitle, "?\n");
 
     // TODO: Refactor gas pretty-printing
-    char o2[4];
-    sprintf(o2, "%d", show_o2);
-
-    char he[4];
-    sprintf(he, "%d", show_he);
-
     char prettyGas[6] = "";
-    strcat(prettyGas, o2);
-    strcat(prettyGas, "/");
-    strcat(prettyGas, he);
-
+    populatePrettyGas(show_o2, show_he, prettyGas);
+    
     if (u8g2.userInterfaceMessage(confirmTitle, prettyGas, "", "Ok\nCancel") == 1) {
-        gases[selection-1] = Gas {
-            show_o2, show_he, 100 - show_o2 - show_he
+        Gas new_gas = Gas {
+            show_o2, show_he, 100 - show_he - show_o2
         };
+        setGas(&new_gas, selection);
     }
 }
 
@@ -369,7 +368,7 @@ void drawScreen1() {
         drawDesat();
 
         drawGas();      // Same location as mode 1
-        drawGFTwo();
+        drawGFSurface();
 
     }
 
@@ -378,7 +377,7 @@ void drawScreen1() {
     u8g2.drawHLine(0, 87, 128);
 }
 
-void drawGFTwo() {
+void drawGFSurface() {
     u8g2.setFont(u8g2_font_9x15B_mr);
     u8g2.drawStr(70, 104, "GF");
 
@@ -456,16 +455,10 @@ void drawGas() {
 
     u8g2.setFont(u8g2_font_10x20_mn);
 
-    char o2[4];
-    sprintf(o2, "%d", gases[current_gas].o2);
-
-    char he[4];
-    sprintf(he, "%d", gases[current_gas].he);
+    Gas current_gas = getGas(getSelectedGas());
 
     char prettyGas[6] = "";
-    strcat(prettyGas, o2);
-    strcat(prettyGas, "/");
-    strcat(prettyGas, he);
+    populatePrettyGas(current_gas.o2, current_gas.he, prettyGas);
 
     u8g2.drawStr(0, 128, prettyGas);
 }
@@ -476,4 +469,16 @@ void drawTTS() {
 
     u8g2.setFont(u8g2_font_inb21_mn);
     u8g2.drawStr(70, 128, "15");
+}
+
+void populatePrettyGas(uintptr_t o2, uintptr_t he, char output[6]) {
+    char _o2[4];
+    sprintf(_o2, "%d", o2);
+
+    char _he[4];
+    sprintf(_he, "%d", he);
+
+    strcat(output, _o2);
+    strcat(output, "/");
+    strcat(output, _he);
 }
