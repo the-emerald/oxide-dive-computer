@@ -23,6 +23,8 @@ const char* setGFMenuSl = "GF 1\nGF 2\nBack";
 const char* systemSettingsMenuTitle = "System Settings";
 const char* systemSettingsMenuSl = "Display\nBluetooth\nReset Tissues\nReset Settings\nBack";
 
+const char* switchGasMenuTitle = "Switch gas";
+
 const char* gasSurfaceMenuTitle = "Set Gas";
 const char* gasSurfaceMenuSl = "Gas 1\nGas 2\nGas 3\nGas 4\nGas 5\nBack";  // 1..=5 is for gases
 
@@ -115,9 +117,28 @@ void drawUnderwaterMenu() {
 void drawSwitchGasMenu() {
     // Draw switch gas
     u8g2.setFont(u8g2_font_7x13B_mr);
-    uint8_t menuReturn = u8g2.userInterfaceSelectionList(gasSurfaceMenuTitle, 1, gasSurfaceMenuSl);
+    uint8_t menuReturn = u8g2.userInterfaceSelectionList(switchGasMenuTitle, 1, gasSurfaceMenuSl);
 
     current_state = fromSwitchGasMenu(menuReturn);
+}
+
+void drawSwitchGasConfirmation(uint8_t selection) {
+    selection -= 1; // Indexing
+    u8g2.setFont(u8g2_font_profont22_mr);
+
+    char id[5];
+    sprintf(id, "%d", selection + 1);
+    char confirmTitle[16] = "Switch ";
+    strcat(confirmTitle, id);
+    strcat(confirmTitle, "?\n");
+
+    Gas gas = getGas(selection);
+    char prettyGas[6] = "";
+    populatePrettyGas(gas.o2, gas.he, prettyGas);
+
+    if (u8g2.userInterfaceMessage(confirmTitle, prettyGas, "", "Ok\nCancel") == 1) {
+        setSelectedGas(selection);
+    }
 }
 
 void drawToggleGF() {
@@ -184,7 +205,7 @@ void drawPPO2Alarm() {
     current_state = fromPPO2AlarmMenu(menuReturn);
 }
 
-extern void drawGFLSelection(uint8_t selection) {
+extern void drawGFSelection(uint8_t selection) {
     selection -= 1;
     u8g2.setFont(u8g2_font_profont22_mr);
 
@@ -192,7 +213,7 @@ extern void drawGFLSelection(uint8_t selection) {
     uint8_t show_gfh = getGFH(selection);
 
     char id[5];
-    sprintf(id, "%d", selection);
+    sprintf(id, "%d", selection + 1);
 
     char title[16] = "Set GF ";
     strcat(title, id);
@@ -229,7 +250,7 @@ extern void drawGasSelection(uint8_t selection) {
     u8g2.setFont(u8g2_font_profont22_mr);
 
     char id[5];
-    sprintf(id, "%d", selection);
+    sprintf(id, "%d", selection + 1);
 
     char title[16] = "Set gas ";
     strcat(title, id);
@@ -248,10 +269,9 @@ extern void drawGasSelection(uint8_t selection) {
     strcat(confirmTitle, id);
     strcat(confirmTitle, "?\n");
 
-    // TODO: Refactor gas pretty-printing
     char prettyGas[6] = "";
     populatePrettyGas(show_o2, show_he, prettyGas);
-    
+
     if (u8g2.userInterfaceMessage(confirmTitle, prettyGas, "", "Ok\nCancel") == 1) {
         Gas new_gas = Gas {
             show_o2, show_he, 100 - show_he - show_o2

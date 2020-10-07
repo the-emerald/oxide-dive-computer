@@ -10,8 +10,18 @@ DisplayState fromSetGFMenu(uint8_t selection) {
         case 3:
             return UnderwaterMenu;
         default:
-            drawGFLSelection(selection);
+            drawGFSelection(selection);
             return UnderwaterMenu;
+    }
+}
+
+void doToggleGF() {
+    uint8_t selected = getSelectedGF();
+    if (selected == 0) {
+        setSelectedGF(1);
+    }
+    else {
+        setSelectedGF(0);
     }
 }
 
@@ -21,7 +31,7 @@ DisplayState fromUnderwaterMenu(uint8_t selection) {
         case 1:
             return SwitchGas;
         case 2:
-            // TODO: Toggle GF business logic
+            doToggleGF();
             return Screen1;
         case 3:
             return SetGF;
@@ -48,7 +58,7 @@ DisplayState fromSwitchGasMenu(uint8_t selection) {
         case 6:
             return UnderwaterMenu;
         default:
-            // TODO: Make it confirm choice?
+            drawSwitchGasConfirmation(selection);
             return Screen1;
     }
 }
@@ -82,7 +92,7 @@ DisplayState fromSurfaceMenu(uint8_t selection) {
 DisplayState fromDiveSettingsMenu(uint8_t selection) {
     switch (selection) {
         case 1: case 2:
-            drawGFLSelection(selection);
+            drawGFSelection(selection);
             return DiveSettings;
         case 3:
             return WaterSalinity;

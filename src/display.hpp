@@ -31,8 +31,9 @@ extern void drawDesat();
 extern void drawGFSurface();
 extern void drawNoFly();
 
+extern void drawSwitchGasConfirmation(uint8_t selection);
 extern void drawGasSelection(uint8_t selection);
-extern void drawGFLSelection(uint8_t selection);
+extern void drawGFSelection(uint8_t selection);
 extern void drawNDLAlarmSelection();
 
 void drawTemperature();
