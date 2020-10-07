@@ -8,6 +8,7 @@ const int gas_he_address[] = {9, 10, 11, 12, 13};
 const int selected_gas_address = 14;
 const int selected_gf_address = 15;
 const int ndl_alarm_address = 16;
+const int salinity_address = 17;
 
 Gas getGas(uint8_t idx) {
     uint8_t o2 = EEPROM.read(gas_o2_address[idx]);
@@ -78,6 +79,15 @@ void array_to_double(uint8_t array[8], double val) {
 
 ComputerMode computer_mode = Surface;
 
+Salinity getWaterSalinity() {
+    return (Salinity) (EEPROM.read(salinity_address) + 1);
+}
+
+void setWaterSalinity(Salinity value) {
+    EEPROM.write(salinity_address, ((uint8_t) value) - 1);
+    EEPROM.commit();
+}
+
 // Initialises the EEPROM once. This makes sure sane values are set inside the EEPROM following
 // a wipe. Afterwards, it toggles a flag so it will not overwrite user settings.
 extern void initialiseEEPROMOnce() {
@@ -102,6 +112,9 @@ extern void initialiseEEPROMOnce() {
 
     // NDL alarm
     setNDLAlarm(5);
+
+    // Salinity
+    setWaterSalinity(Salinity::Fresh);
 
     EEPROM.write(255, 1);
 }

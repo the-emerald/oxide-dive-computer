@@ -28,6 +28,15 @@ enum ComputerMode {
     Underwater
 };
 
+enum Salinity {
+    Fresh = 1,
+    EN13319 = 2,
+    Salt = 3
+};
+
+extern Salinity getWaterSalinity();
+extern void setWaterSalinity(Salinity value);
+
 extern ComputerMode computer_mode;
 
 // The following section is useful for mockup purposes only.

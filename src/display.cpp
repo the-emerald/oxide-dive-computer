@@ -155,7 +155,8 @@ void drawNDLAlarmSelection() {
     u8g2.setFont(u8g2_font_profont22_mr);
 
     uint8_t show_alarm = getNDLAlarm();
-    if (show_alarm == ~0) {
+    Serial.println(show_alarm);
+    if (show_alarm == 255) {
         show_alarm = 0;
     }
 
@@ -312,8 +313,21 @@ void drawSalinityField() {
     u8g2.setFont(u8g2_font_9x15B_mr);
     u8g2.drawStr(70, 12, "Water");
 
+    char sal[6];
+    switch (getWaterSalinity()) {
+        case Salinity::Fresh:
+            sprintf(sal, "FRESH");
+            break;
+        case Salinity::EN13319:
+            sprintf(sal, "EN133");
+            break;
+        case Salinity::Salt:
+            sprintf(sal, "SALT");
+            break;
+    }
+
     u8g2.setFont(u8g2_font_profont22_mf);
-    u8g2.drawStr(70, 36, "FRESH");
+    u8g2.drawStr(70, 36, sal);
 }
 
 void drawCNS() {

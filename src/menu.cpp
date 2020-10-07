@@ -146,6 +146,15 @@ DisplayState fromSetGasUnderwaterMenu(uint8_t selection) {
 
 DisplayState fromWaterSalinityMenu(uint8_t selection) {
     switch (selection) {
+        case 1:
+            setWaterSalinity(Salinity::Fresh);
+            return DiveSettings;
+        case 2:
+            setWaterSalinity(Salinity::EN13319);
+            return DiveSettings;
+        case 3:
+            setWaterSalinity(Salinity::Salt);
+            return DiveSettings;
         case 4:
             return DiveSettings;
         default:
