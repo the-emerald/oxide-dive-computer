@@ -8,17 +8,25 @@
 
 U8G2_SH1107_SEEED_128X128_F_HW_I2C u8g2(U8G2_R0, /* clock=*/ SCL, /* data=*/ SDA, /* reset=*/ U8X8_PIN_NONE);
 
-const char* menuTitle = "Menu";
-const char* menuSl = "Dive Settings\nSystem Settings\nGas\nAbout\nBack";
+const char* surfaceMenuTitle = "Menu";
+const char* surfaceMenuSl = "Dive Settings\nSystem Settings\nSet Gas\nAbout\nDEBUG ComputerMode\nBack";
+
+const char* underwaterMenuTitle = "Menu";
+const char* underwaterMenuSl = "Switch Gas\nToggle GF\nSet GF\nSet Gas\nDEBUG ComputerMode\nBack";
 
 const char* diveSettingsMenuTitle = "Dive Settings";
-const char* diveSettingsMenuSl = "GF 1\nGF 2\nSalinity\nppO2 Alarm\nNDL Alarm\nBack";
+const char* diveSettingsMenuSl = "GF 1\nGF 2\nSalinity\nppO2 Alarm\nNDL Alarm\nBack"; 
+
+const char* setGFMenuTitle = "Set GF";
+const char* setGFMenuSl = "GF 1\nGF 2\nBack";
 
 const char* systemSettingsMenuTitle = "System Settings";
 const char* systemSettingsMenuSl = "Display\nBluetooth\nReset Tissues\nReset Settings\nBack";
 
-const char* gasMenuTitle = "Gas";
-const char* gasMenuSl = "Gas 1\nGas 2\nGas 3\nGas 4\nGas 5\nGas 6\nGas 7\nGas 8\nGas 9\nGas 10\nBack";  // 1..=10 is for gases
+const char* switchGasMenuTitle = "Switch gas";
+
+const char* gasSurfaceMenuTitle = "Set Gas";
+const char* gasSurfaceMenuSl = "Gas 1\nGas 2\nGas 3\nGas 4\nGas 5\nBack";  // 1..=5 is for gases
 
 const char* waterSalinityMenuTitle = "Water Salinity";
 const char* waterSalinityMenuSl = "Fresh\nEN13319\nSalt\nBack";
@@ -32,14 +40,29 @@ const char* ndlAlarmMenuSl = "On\nOff\nBack";
 void drawScreen(DisplayState state) {
     u8g2.setFontRefHeightAll();
     switch (state) {
-        case DiveScreen1:
-            drawDiveScreen1();
+        case Screen1:
+            drawScreen1();
             break;
-        case DiveScreen2:
-            drawDiveScreen2();
+        case Screen2:
+            drawScreen2();
             break;
-        case Menu:
-            drawMenu();
+        case UnderwaterMenu:
+            drawUnderwaterMenu();
+            break;
+        // case ToggleGF:
+        //     drawToggleGF();
+        //     break;
+        case SetGF:
+            drawSetGFMenu();
+            break;
+        case SwitchGas:
+            drawSwitchGasMenu();
+            break;
+        case SetGasUnderwater:
+            drawSetGasUnderwaterMenu();
+            break;
+        case SurfaceMenu:
+            drawSurfaceMenu();
             break;
         // Sub-menus
         case DiveSettings:
@@ -57,8 +80,8 @@ void drawScreen(DisplayState state) {
         case NDLAlarm:
             drawNDLAlarm();
             break;
-        case Gases:
-            drawGasMenu();
+        case SetGasSurface:
+            drawSetGasSurfaceMenu();
             break;
         case About:
             drawAbout();
@@ -70,6 +93,58 @@ void drawScreen(DisplayState state) {
     u8g2.sendBuffer();
 }
 
+void drawSetGasUnderwaterMenu() {
+    u8g2.setFont(u8g2_font_7x13B_mr);
+    uint8_t menuReturn = u8g2.userInterfaceSelectionList(gasSurfaceMenuTitle, 1, gasSurfaceMenuSl);
+
+    current_state = fromSetGasUnderwaterMenu(menuReturn);
+}
+
+void drawSetGFMenu() {
+    u8g2.setFont(u8g2_font_7x13B_mr);
+    uint8_t menuReturn = u8g2.userInterfaceSelectionList(setGFMenuTitle, 1, setGFMenuSl);
+
+    current_state = fromSetGFMenu(menuReturn);
+}
+
+void drawUnderwaterMenu() {
+    u8g2.setFont(u8g2_font_7x13B_mr);
+    uint8_t menuReturn = u8g2.userInterfaceSelectionList(underwaterMenuTitle, 1, underwaterMenuSl);
+
+    current_state = fromUnderwaterMenu(menuReturn);
+}
+
+void drawSwitchGasMenu() {
+    // Draw switch gas
+    u8g2.setFont(u8g2_font_7x13B_mr);
+    uint8_t menuReturn = u8g2.userInterfaceSelectionList(switchGasMenuTitle, 1, gasSurfaceMenuSl);
+
+    current_state = fromSwitchGasMenu(menuReturn);
+}
+
+void drawSwitchGasConfirmation(uint8_t selection) {
+    selection -= 1; // Indexing
+    u8g2.setFont(u8g2_font_profont22_mr);
+
+    char id[5];
+    sprintf(id, "%d", selection + 1);
+    char confirmTitle[16] = "Switch ";
+    strcat(confirmTitle, id);
+    strcat(confirmTitle, "?\n");
+
+    Gas gas = getGas(selection);
+    char prettyGas[6] = "";
+    populatePrettyGas(gas.o2, gas.he, prettyGas);
+
+    if (u8g2.userInterfaceMessage(confirmTitle, prettyGas, "", "Ok\nCancel") == 1) {
+        setSelectedGas(selection);
+    }
+}
+
+void drawToggleGF() {
+    // TODO: Do you want a confirmation?
+}
+
 void drawNDLAlarm() {
     u8g2.setFont(u8g2_font_7x13B_mr);
     uint8_t menuReturn = u8g2.userInterfaceSelectionList(ndlAlarmMenuTitle, 1, ndlAlarmMenuSl);
@@ -79,16 +154,21 @@ void drawNDLAlarm() {
 void drawNDLAlarmSelection() {
     u8g2.setFont(u8g2_font_profont22_mr);
 
-    // TODO: Fix dummy NDL alarm values
-    uint8_t dummy_alarm = 0;
+    uint8_t show_alarm = getNDLAlarm();
+    Serial.println(show_alarm);
+    if (show_alarm == 255) {
+        show_alarm = 0;
+    }
 
-    u8g2.userInterfaceInputValue("Set NDL\nalarm:\n", "", &dummy_alarm, 1, 10, 2, " min");
+    u8g2.userInterfaceInputValue("Set NDL\nalarm:\n", "", &show_alarm, 1, 10, 2, " min");
 
     char alarm[16];
-    sprintf(alarm, "%d", dummy_alarm);
+    sprintf(alarm, "%d", show_alarm);
     strcat(alarm, " min");
     
-    u8g2.userInterfaceMessage("Confirm?", alarm, "", "Ok\nCancel");
+    if (u8g2.userInterfaceMessage("Confirm?", alarm, "", "Ok\nCancel") == 1) {
+        setNDLAlarm(show_alarm);
+    }
 }
 
 void drawWaterSalinity() {
@@ -112,11 +192,11 @@ void drawSystemSettings() {
     current_state = fromDiveSettingsMenu(menuReturn);
 }
 
-void drawGasMenu() {
+void drawSetGasSurfaceMenu() {
     u8g2.setFont(u8g2_font_7x13B_mr);
-    uint8_t menuReturn = u8g2.userInterfaceSelectionList(gasMenuTitle, 1, gasMenuSl);
+    uint8_t menuReturn = u8g2.userInterfaceSelectionList(gasSurfaceMenuTitle, 1, gasSurfaceMenuSl);
 
-    current_state = fromGasMenu(menuReturn);
+    current_state = fromSetGasSurfaceMenu(menuReturn);
 }
 
 void drawPPO2Alarm() {
@@ -126,14 +206,15 @@ void drawPPO2Alarm() {
     current_state = fromPPO2AlarmMenu(menuReturn);
 }
 
-extern void drawGFLSelection(uint8_t selection) {
+extern void drawGFSelection(uint8_t selection) {
+    selection -= 1;
     u8g2.setFont(u8g2_font_profont22_mr);
 
-    uint8_t show_gfl = gfls[selection-1];
-    uint8_t show_gfh = gfhs[selection-1];
+    uint8_t show_gfl = getGFL(selection);
+    uint8_t show_gfh = getGFH(selection);
 
     char id[5];
-    sprintf(id, "%d", selection);
+    sprintf(id, "%d", selection + 1);
 
     char title[16] = "Set GF ";
     strcat(title, id);
@@ -146,37 +227,31 @@ extern void drawGFLSelection(uint8_t selection) {
     strcat(confirmTitle, id);
     strcat(confirmTitle, "?\n");
 
-    // TODO: Refactor GF pretty-printing
-    char gfl[4];
-    sprintf(gfl, "%d", show_gfl);
-
-    char gfh[4];
-    sprintf(gfh, "%d", show_gfh);
-
     char gf[6] = "";
-    strcat(gf, gfl);
-    strcat(gf, "/");
-    strcat(gf, gfh);
+    populatePrettyGF(show_gfl, show_gfh, gf);
 
     if (u8g2.userInterfaceMessage(confirmTitle, gf, "", "Ok\nCancel") == 1) {
         // Update the GFs
-        gfls[selection-1] = show_gfl;
-        gfhs[selection-1] = show_gfh;
+        setGFL(selection, show_gfl);
+        setGFH(selection, show_gfh);
     }
 }
 
 extern void drawGasSelection(uint8_t selection) {
+    selection -= 1;
     u8g2.setFont(u8g2_font_profont22_mr);
 
     char id[5];
-    sprintf(id, "%d", selection);
+    sprintf(id, "%d", selection + 1);
 
     char title[16] = "Set gas ";
     strcat(title, id);
     strcat(title, "\n");
 
-    uint8_t show_o2 = 1;
-    uint8_t show_he = 1;
+    Gas gas_to_edit = getGas(selection);
+
+    uint8_t show_o2 = gas_to_edit.o2;
+    uint8_t show_he = gas_to_edit.he;
 
     u8g2.userInterfaceInputValue(title, "O2: ", &show_o2, 0, 100, 3, "");
 
@@ -186,22 +261,14 @@ extern void drawGasSelection(uint8_t selection) {
     strcat(confirmTitle, id);
     strcat(confirmTitle, "?\n");
 
-    // TODO: Refactor gas pretty-printing
-    char o2[4];
-    sprintf(o2, "%d", show_o2);
-
-    char he[4];
-    sprintf(he, "%d", show_he);
-
     char prettyGas[6] = "";
-    strcat(prettyGas, o2);
-    strcat(prettyGas, "/");
-    strcat(prettyGas, he);
+    populatePrettyGas(show_o2, show_he, prettyGas);
 
     if (u8g2.userInterfaceMessage(confirmTitle, prettyGas, "", "Ok\nCancel") == 1) {
-        // gases[selection-1] = Gas {
-        //     show_o2, show_he, 100 - show_o2 - show_he
-        // };
+        Gas new_gas = Gas {
+            show_o2, show_he, 100 - show_he - show_o2
+        };
+        setGas(&new_gas, selection);
     }
 }
 
@@ -214,25 +281,61 @@ void drawAbout() {
     u8g2.drawStr(20, 110, "Powered by Capra");
 }
 
-void drawMenu() {
+void drawSurfaceMenu() {
     u8g2.setFont(u8g2_font_7x13B_mr);
-    uint8_t menuReturn = u8g2.userInterfaceSelectionList(menuTitle, 1, menuSl);
+    uint8_t menuReturn = u8g2.userInterfaceSelectionList(surfaceMenuTitle, 1, surfaceMenuSl);
 
-    current_state = fromMenu(menuReturn);
+    current_state = fromSurfaceMenu(menuReturn);
 }
 
-void drawDiveScreen2() {
+void drawScreen2() {
+    if (computer_mode == ComputerMode::Underwater) {
+        drawTemperature();
+        drawppO2();
+        drawGF();
+        drawBatteryVoltage();
+    }
+    else {
+        drawTemperature();      // Same location as mode 1
+        drawSalinityField();
+        drawCNS();
+        drawBatteryVoltage();   // Same location as mode 1
+    }
+
     u8g2.drawVLine(62, 0, 87);
-
-    drawTemperature();
-    drawppO2();
     u8g2.drawHLine(0, 41, 128);
-
-    drawGF();
-    drawBatteryVoltage();
     u8g2.drawHLine(0, 87, 128);
 
     drawTissuePressure();
+}
+
+void drawSalinityField() {
+    u8g2.setFont(u8g2_font_9x15B_mr);
+    u8g2.drawStr(70, 12, "Water");
+
+    char sal[6];
+    switch (getWaterSalinity()) {
+        case Salinity::Fresh:
+            sprintf(sal, "FRESH");
+            break;
+        case Salinity::EN13319:
+            sprintf(sal, "EN133");
+            break;
+        case Salinity::Salt:
+            sprintf(sal, "SALT");
+            break;
+    }
+
+    u8g2.setFont(u8g2_font_profont22_mf);
+    u8g2.drawStr(70, 36, sal);
+}
+
+void drawCNS() {
+    u8g2.setFont(u8g2_font_9x15B_mr);
+    u8g2.drawStr(0, 58, "CNS");
+
+    u8g2.setFont(u8g2_font_inb16_mr);
+    u8g2.drawStr(0, 82, "122%");
 }
 
 void drawTemperature() {
@@ -255,8 +358,14 @@ void drawGF() {
     u8g2.setFont(u8g2_font_9x15B_mr);
     u8g2.drawStr(0, 58, "GF");
 
+    uint8_t cur_gfl = getGFL(getSelectedGF());
+    uint8_t cur_gfh = getGFH(getSelectedGF());
+
+    char gf[6] = "";
+    populatePrettyGF(cur_gfl, cur_gfh, gf);
+
     u8g2.setFont(u8g2_font_10x20_mn);
-    u8g2.drawStr(0, 82, "30/70");
+    u8g2.drawStr(0, 82, gf);
 }
 
 void drawBatteryVoltage() {
@@ -271,19 +380,81 @@ void drawTissuePressure() {
     // TODO: Draw tissue pressures
 }
 
-void drawDiveScreen1() {
+void drawScreen1() {
+    if (computer_mode == ComputerMode::Underwater) {
+        drawTime();
+        drawNextStopDepth();
+
+        drawDepth();
+        drawRuntime();
+
+        drawGas();
+        drawTTS();
+    }
+    else {
+        drawSI();
+        drawNoFly();
+
+        drawMBar();
+        drawDesat();
+
+        drawGas();      // Same location as mode 1
+        drawGFSurface();
+
+    }
+
     u8g2.drawVLine(62, 0, 128);
-    drawNDL();
-    drawNextStopDepth();
     u8g2.drawHLine(0, 41, 128);
-    drawDepth();
-    drawRuntime();
     u8g2.drawHLine(0, 87, 128);
-    drawGas();
-    drawTTS();
 }
 
-void drawNDL() {
+void drawGFSurface() {
+    u8g2.setFont(u8g2_font_9x15B_mr);
+    u8g2.drawStr(70, 104, "GF");
+
+    uint8_t cur_gfl = getGFL(getSelectedGF());
+    uint8_t cur_gfh = getGFH(getSelectedGF());
+
+    char gf[6] = "";
+    populatePrettyGF(cur_gfl, cur_gfh, gf);
+
+    u8g2.setFont(u8g2_font_10x20_mn);
+    u8g2.drawStr(70, 128, gf);
+}
+
+void drawSI() {
+    u8g2.setFont(u8g2_font_9x15B_mr);
+    u8g2.drawStr(0, 12, "SI");
+
+    u8g2.setFont(u8g2_font_inb16_mf);
+    u8g2.drawStr(0, 36, "9d");
+}
+
+void drawNoFly() {
+    u8g2.setFont(u8g2_font_9x15B_mr);
+    u8g2.drawStr(70, 12, "No Fly");
+
+    u8g2.setFont(u8g2_font_inb16_mf);
+    u8g2.drawStr(70, 36, "23h");
+}
+
+void drawMBar() {
+    u8g2.setFont(u8g2_font_9x15B_mr);
+    u8g2.drawStr(0, 58, "mBar");
+
+    u8g2.setFont(u8g2_font_inb16_mn);
+    u8g2.drawStr(0, 82, "1015");
+}
+
+void drawDesat() {
+    u8g2.setFont(u8g2_font_9x15B_mr);
+    u8g2.drawStr(70, 58, "Desat");
+
+    u8g2.setFont(u8g2_font_inb16_mf);
+    u8g2.drawStr(70, 82, "48h");
+}
+
+void drawTime() {
     u8g2.setFont(u8g2_font_9x15B_mr);
     u8g2.drawStr(0, 12, "Time");
 
@@ -320,7 +491,13 @@ void drawGas() {
     u8g2.drawStr(0, 104, "Gas");
 
     u8g2.setFont(u8g2_font_10x20_mn);
-    u8g2.drawStr(0, 128, "21/0");
+
+    Gas current_gas = getGas(getSelectedGas());
+
+    char prettyGas[6] = "";
+    populatePrettyGas(current_gas.o2, current_gas.he, prettyGas);
+
+    u8g2.drawStr(0, 128, prettyGas);
 }
 
 void drawTTS() {
@@ -329,4 +506,28 @@ void drawTTS() {
 
     u8g2.setFont(u8g2_font_inb21_mn);
     u8g2.drawStr(70, 128, "15");
+}
+
+void populatePrettyGas(uintptr_t o2, uintptr_t he, char output[6]) {
+    char _o2[4];
+    sprintf(_o2, "%d", o2);
+
+    char _he[4];
+    sprintf(_he, "%d", he);
+
+    strcat(output, _o2);
+    strcat(output, "/");
+    strcat(output, _he);
+}
+
+void populatePrettyGF(uint8_t lo, uint8_t hi, char output[6]) {
+    char _lo[4];
+    sprintf(_lo, "%d", lo);
+
+    char _hi[4];
+    sprintf(_hi, "%d", hi);
+
+    strcat(output, _lo);
+    strcat(output, "/");
+    strcat(output, _hi);
 }

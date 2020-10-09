@@ -1,30 +1,98 @@
 #include "menu.hpp"
 #include <cstdint>
 #include "display.hpp"
+#include "settings.hpp"
 
-DisplayState current_state = DiveScreen1;
+DisplayState current_state = Screen1;
 
-DisplayState fromMenu(uint8_t selection) {
+DisplayState fromSetGFMenu(uint8_t selection) {
+    switch (selection) {
+        case 3:
+            return UnderwaterMenu;
+        default:
+            drawGFSelection(selection);
+            return UnderwaterMenu;
+    }
+}
+
+void doToggleGF() {
+    uint8_t selected = getSelectedGF();
+    if (selected == 0) {
+        setSelectedGF(1);
+    }
+    else {
+        setSelectedGF(0);
+    }
+}
+
+
+DisplayState fromUnderwaterMenu(uint8_t selection) {
+    switch (selection) {
+        case 1:
+            return SwitchGas;
+        case 2:
+            doToggleGF();
+            return Screen1;
+        case 3:
+            return SetGF;
+        case 4:
+            return SetGasUnderwater;
+        case 5:
+            // TODO: Remove this when finished debugging
+            if (computer_mode == ComputerMode::Underwater) {
+                computer_mode = ComputerMode::Surface;
+            }
+            else {
+                computer_mode = ComputerMode::Underwater;
+            }
+            return Screen1;
+        case 6:
+            return Screen1;
+        default:
+            return UnderwaterMenu;
+    }
+}
+
+DisplayState fromSwitchGasMenu(uint8_t selection) {
+    switch (selection) {
+        case 6:
+            return UnderwaterMenu;
+        default:
+            drawSwitchGasConfirmation(selection);
+            return Screen1;
+    }
+}
+
+DisplayState fromSurfaceMenu(uint8_t selection) {
     switch (selection) {
         case 1:
             return DiveSettings;
         case 2:
             return SystemSettings;
         case 3:
-            return Gases;
+            return SetGasSurface;
         case 4:
             return About;
         case 5:
-            return DiveScreen1;
+            // TODO: Remove this when finished debugging
+            if (computer_mode == ComputerMode::Underwater) {
+                computer_mode = ComputerMode::Surface;
+            }
+            else {
+                computer_mode = ComputerMode::Underwater;
+            }
+            return Screen1;
+        case 6:
+            return Screen1;
         default:
-            return Menu;
+            return SurfaceMenu;
     }
 }
 
 DisplayState fromDiveSettingsMenu(uint8_t selection) {
     switch (selection) {
         case 1: case 2:
-            drawGFLSelection(selection);
+            drawGFSelection(selection);
             return DiveSettings;
         case 3:
             return WaterSalinity;
@@ -33,7 +101,7 @@ DisplayState fromDiveSettingsMenu(uint8_t selection) {
         case 5:
             return NDLAlarm;
         case 6:
-            return Menu;
+            return SurfaceMenu;
         default:
             return DiveSettings;
     }
@@ -50,24 +118,43 @@ DisplayState fromSystemSettingsMenu(uint8_t selection) {
         case 4:
             return ResetSettings;
         case 5:
-            return Menu;
+            return SurfaceMenu;
         default:
-            return Menu;
+            return SurfaceMenu;
     }
 }
 
-DisplayState fromGasMenu(uint8_t selection) {
+DisplayState fromSetGasSurfaceMenu(uint8_t selection) {
     switch (selection) {
-        case 11:
-            return Menu;
+        case 6:
+            return SurfaceMenu;
         default:
             drawGasSelection(selection);
-            return Gases;
+            return SetGasSurface;
+    }
+}
+
+DisplayState fromSetGasUnderwaterMenu(uint8_t selection) {
+        switch (selection) {
+        case 6:
+            return UnderwaterMenu;
+        default:
+            drawGasSelection(selection);
+            return Screen1;
     }
 }
 
 DisplayState fromWaterSalinityMenu(uint8_t selection) {
     switch (selection) {
+        case 1:
+            setWaterSalinity(Salinity::Fresh);
+            return DiveSettings;
+        case 2:
+            setWaterSalinity(Salinity::EN13319);
+            return DiveSettings;
+        case 3:
+            setWaterSalinity(Salinity::Salt);
+            return DiveSettings;
         case 4:
             return DiveSettings;
         default:
@@ -91,29 +178,38 @@ DisplayState fromNDLAlarmMenu(uint8_t selection) {
         case 1:
             drawNDLAlarmSelection();
             return DiveSettings;
+        case 2:
+            setNDLAlarm(~0);
         default:
             return DiveSettings;
     }
 }
 
+DisplayState determineMenuTransition() {
+    if (computer_mode == ComputerMode::Underwater) {
+        return UnderwaterMenu;
+    }
+    return SurfaceMenu;
+}
+
 DisplayState nextDisplayState(DisplayState current_state, Button input) {
     switch (current_state) {
-        case DiveScreen1:
+        case Screen1:
             switch (input) {
                 case Cycle:
-                    return DiveScreen2;
+                    return Screen2;
                 case Select:
-                    return Menu;
+                    return determineMenuTransition();
             }
-        case DiveScreen2:
+        case Screen2:
             switch (input) {
                 case Cycle:
-                    return DiveScreen1;
+                    return Screen1;
                 case Select:
-                    return Menu;
+                    return determineMenuTransition();
             }
         case About:
-            return Menu;
+            return SurfaceMenu;
         // Default: do not change any state
         default:
             return current_state;

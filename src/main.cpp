@@ -7,6 +7,8 @@
 #include "button.hpp"
 #include "menu.hpp"
 #include "libcapra_core_xtensa.h"
+#include "EEPROM.h"
+#include "settings.hpp"
 
 const int LED_PIN = 13;
 
@@ -23,6 +25,10 @@ bool update = false;
 
 void setup() {
   Serial.begin(115200);
+
+  EEPROM.begin(256);
+  initialiseEEPROMOnce();
+  
   pinMode(BUTTON_CYCLE_PIN, INPUT_PULLUP);
   pinMode(BUTTON_SELECT_PIN, INPUT_PULLUP);
 

@@ -1,8 +1,43 @@
 #pragma once
 
-// #include "libcapra_core_xtensa.h"
-#include <cstdint>
+#include "libcapra_core_xtensa.h"
 
-// extern Gas gases[10];
-extern uint8_t gfls[2];
-extern uint8_t gfhs[2];
+extern Gas getGas(uint8_t idx);
+extern void setGas(const Gas *gas, uint8_t idx);
+
+extern uint8_t getGFL(uint8_t idx);
+extern void setGFL(uint8_t idx, uint8_t val);
+
+extern uint8_t getGFH(uint8_t idx);
+extern void setGFH(uint8_t idx, uint8_t val);
+
+extern uint8_t getSelectedGas();
+extern void setSelectedGas(uint8_t val);
+
+extern uint8_t getSelectedGF();
+extern void setSelectedGF(uint8_t val);
+
+extern uint8_t getNDLAlarm();
+extern void setNDLAlarm(uint8_t val);
+
+void double_to_array(uint8_t array[8], double val);
+void array_to_double(uint8_t array[8], double val);
+
+enum ComputerMode {
+    Surface,
+    Underwater
+};
+
+enum Salinity {
+    Fresh = 1,
+    EN13319 = 2,
+    Salt = 3
+};
+
+extern Salinity getWaterSalinity();
+extern void setWaterSalinity(Salinity value);
+
+extern ComputerMode computer_mode;
+
+// The following section is useful for mockup purposes only.
+extern void initialiseEEPROMOnce();
